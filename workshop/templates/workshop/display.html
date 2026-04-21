@@ -670,8 +670,8 @@
         throw new Error('Failed to load state');
       }
       const data = await res.json();
-      render(data);
       currentState = data;
+      render(data);
     }
 
     function setStatus(text, isError = false) {
@@ -831,7 +831,7 @@
       awardResultsRevealed = true;
       startConfetti();
       startKoolCelebration();
-      refreshAwardUi();
+      window.requestAnimationFrame(() => refreshAwardUi());
     }
 
     function startAwardSequence(sectionId) {
@@ -842,7 +842,6 @@
 
       awardActiveSectionId = sectionId;
       awardResultsRevealed = false;
-      refreshAwardUi();
 
       if (sectionId === null) {
         return;
@@ -1135,8 +1134,9 @@
         ? 'Students can scan now.'
         : 'Turn Join on to allow student sign-in.';
       document.getElementById('joinQrWrap').classList.toggle('hidden', !state.join_open);
-      const showVoteQr = isSectionNine(state);
-      document.getElementById('joinQrPanel').classList.toggle('hidden', showVoteQr);
+      const showVoteQr = isSectionNine(state) || isVoteFeedbackSection(state) || isAwardSection(state);
+      const showJoinQrPanel = state.join_open && !showVoteQr;
+      document.getElementById('joinQrPanel').classList.toggle('hidden', !showJoinQrPanel);
       document.getElementById('voteQrPanel').classList.toggle('hidden', !showVoteQr);
       document.getElementById('timerStatus').textContent = state.timer_status;
       document.getElementById('timerText').textContent = formatSeconds(state.remaining_seconds);
