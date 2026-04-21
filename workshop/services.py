@@ -120,6 +120,69 @@ def move_to_next_section(run: WorkshopRun, keep_running: bool = False, reference
     run.save()
 
 
+def _pitch_group_count(settings: WorkshopSettings) -> int:
+    target = max(1, settings.target_group_size)
+    predicted = max(1, math.ceil(settings.predicted_class_size / target))
+    assigned_max = StudentAssignment.objects.aggregate(max_group=Max('group_number'))['max_group'] or 0
+    return max(1, predicted, assigned_max)
+
+
+def advance_pitch_slot(run: WorkshopRun, settings: WorkshopSettings, reference_time=None) -> bool:
+    if run.current_section is None:
+        return False
+    if run.timer_status not in (WorkshopRun.TIMER_RUNNING, WorkshopRun.TIMER_PAUSED):
+        return False
+
+    section_duration = max(0, int(run.current_section.duration_seconds or 0))
+    if section_duration == 0:
+        return False
+
+    now = reference_time or timezone.now()
+    if run.timer_status == WorkshopRun.TIMER_RUNNING:
+        if run.end_at is None:
+            return False
+        remaining = max(0, math.ceil((run.end_at - now).total_seconds()))
+    else:
+        remaining = max(0, int(run.paused_remaining_seconds or 0))
+
+    elapsed = max(0, section_duration - remaining)
+    group_count = _pitch_group_count(settings)
+    pitch_seconds = 60
+    gap_seconds = 10
+
+    target_elapsed = None
+    cursor = 0
+    for group in range(1, group_count + 1):
+        pitch_end = cursor + pitch_seconds
+        if elapsed < pitch_end:
+            target_elapsed = pitch_end
+            break
+        cursor = pitch_end
+
+        if group < group_count:
+            gap_end = cursor + gap_seconds
+            if elapsed < gap_end:
+                target_elapsed = gap_end
+                break
+            cursor = gap_end
+
+    if target_elapsed is None:
+        return False
+
+    new_remaining = max(0, section_duration - target_elapsed)
+    if new_remaining == remaining:
+        return False
+
+    if run.timer_status == WorkshopRun.TIMER_RUNNING:
+        run.end_at = now + timedelta(seconds=new_remaining)
+        run.save(update_fields=['end_at'])
+    else:
+        run.paused_remaining_seconds = new_remaining
+        run.save(update_fields=['paused_remaining_seconds'])
+
+    return True
+
+
 def move_to_previous_section(run: WorkshopRun, keep_running: bool = False, reference_end_at=None) -> None:
     if run.current_section is None and run.timer_status != WorkshopRun.TIMER_COMPLETED:
         return

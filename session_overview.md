@@ -62,7 +62,7 @@ Return to your original proposal and improve it after critique.
 
 ## Workshop Flow (75 minutes total)
 
-1. Workshop introduction from facilitator (7 min)   
+1. Introduction from Facilitator (7 min)   
 2. Research and first pitch preparation (15 min)  
 3. First pitch round (8 min)  
 4. Research and anti-pitch preparation (10 min)

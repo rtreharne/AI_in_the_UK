@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/control/pause', views.api_control_pause, name='api_control_pause'),
     path('api/control/back', views.api_control_back, name='api_control_back'),
     path('api/control/next', views.api_control_next, name='api_control_next'),
+    path('api/control/pitch/next', views.api_control_next_pitch, name='api_control_next_pitch'),
     path('api/join/open', views.api_join_open, name='api_join_open'),
     path('api/join/close', views.api_join_close, name='api_join_close'),
     path('api/run/reset', views.api_run_reset, name='api_run_reset'),

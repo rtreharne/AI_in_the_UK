@@ -130,6 +130,93 @@
       color: var(--muted);
       font-size: 0.9rem;
     }
+    #sectionDescription {
+      font-size: clamp(1.08rem, 0.85vw + 0.78rem, 1.42rem);
+      line-height: 1.58;
+      color: #1f2937;
+      background: #f8fbff;
+      border: 1px solid #d6e0ef;
+      border-left: 6px solid var(--accent);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin: 8px 0 10px;
+    }
+    #sectionDescription p {
+      margin: 0 0 0.75em;
+    }
+    #sectionDescription ul,
+    #sectionDescription ol {
+      margin: 0 0 0.75em 1.2em;
+      padding: 0;
+    }
+    #sectionDescription li {
+      margin: 0.2em 0;
+    }
+    #sectionDescription h1,
+    #sectionDescription h2,
+    #sectionDescription h3,
+    #sectionDescription h4,
+    #sectionDescription h5,
+    #sectionDescription h6 {
+      margin: 0.2em 0 0.45em;
+      color: var(--text);
+      line-height: 1.28;
+    }
+    #sectionDescription h1 { font-size: 1.5em; }
+    #sectionDescription h2 { font-size: 1.3em; }
+    #sectionDescription h3 { font-size: 1.16em; }
+    #sectionDescription code {
+      font-family: "Consolas", "Menlo", "Monaco", monospace;
+      background: #edf2fb;
+      border: 1px solid #d7deeb;
+      border-radius: 5px;
+      padding: 0.05em 0.3em;
+      font-size: 0.92em;
+    }
+    #sectionDescription a {
+      color: #0f766e;
+      text-decoration: underline;
+    }
+    .allocation-instructions {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 3px solid #b91c1c;
+      background: linear-gradient(135deg, #fff7ed, #ffedd5);
+      box-shadow: 0 10px 24px rgba(185, 28, 28, 0.16);
+      animation: allocation-pulse 1.8s ease-in-out infinite;
+    }
+    .allocation-banner {
+      margin: 0 0 8px;
+      font-size: clamp(1.9rem, 2.5vw + 1rem, 3.2rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #7f1d1d;
+    }
+    .allocation-subtitle {
+      margin: 0 0 10px;
+      font-size: clamp(1.1rem, 0.9vw + 0.8rem, 1.6rem);
+      line-height: 1.25;
+      font-weight: 800;
+      color: #991b1b;
+    }
+    .allocation-steps {
+      margin: 0;
+      padding-left: 1.2em;
+      font-size: clamp(1.03rem, 0.65vw + 0.82rem, 1.34rem);
+      line-height: 1.4;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .allocation-steps li {
+      margin: 0.35em 0;
+    }
+    @keyframes allocation-pulse {
+      0%, 100% { box-shadow: 0 10px 24px rgba(185, 28, 28, 0.16); }
+      50% { box-shadow: 0 14px 30px rgba(185, 28, 28, 0.28); }
+    }
     .upcoming-wrap {
       margin-top: 18px;
     }
@@ -164,6 +251,16 @@
       border-radius: 10px;
       background: #f3f6fb;
       border: 1px solid #d7deeb;
+    }
+    .pitch-round-controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-start;
+    }
+    .pitch-round-controls button {
+      font-size: 0.95rem;
+      padding: 9px 12px;
     }
     .award-results-panel {
       margin-top: 14px;
@@ -288,6 +385,277 @@
       font-size: 1rem;
       width: 160px;
     }
+
+    /* Punk collage theme with tightened contrast for accessibility. */
+    :root {
+      --bg: #f0e300;
+      --panel: #f8ec52;
+      --text: #111111;
+      --accent: #c2185b;
+      --warn: #0e9fbb;
+      --danger: #b71c1c;
+      --muted: #1a1a1a;
+      --border: #111111;
+    }
+    body {
+      font-family: "Arial Black", Impact, "Trebuchet MS", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 12%, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px) 0 0/26px 26px,
+        linear-gradient(163deg, #f0e300 0%, #f0e300 57%, #c2185b 57%, #c2185b 62%, #f0e300 62%, #f0e300 100%);
+    }
+    .panel {
+      background: var(--panel);
+      border: 3px solid var(--border);
+      border-radius: 2px;
+      box-shadow: 8px 8px 0 #111111;
+    }
+    h1, h2, h3 {
+      text-transform: uppercase;
+      letter-spacing: 0.045em;
+      margin-top: 0;
+    }
+    h1 {
+      display: inline-block;
+      padding: 0.2em 0.42em;
+      background: #b0004b;
+      color: #ffffff;
+      box-shadow: 6px 6px 0 #111111;
+      transform: rotate(-1.4deg);
+      font-size: clamp(1.9rem, 1.7vw + 1.2rem, 3rem);
+      margin-bottom: 14px;
+    }
+    h2 {
+      display: inline-block;
+      padding: 0.16em 0.42em;
+      background: #111111;
+      color: #f2e919;
+      box-shadow: 4px 4px 0 #ff2f8e;
+      transform: rotate(0.8deg);
+      margin-bottom: 12px;
+    }
+    h3 {
+      display: inline-block;
+      padding: 0.14em 0.38em;
+      background: #0e9fbb;
+      color: #111111;
+      box-shadow: 3px 3px 0 #111111;
+      margin-bottom: 10px;
+    }
+    .muted {
+      color: #1a1a1a;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .timer {
+      display: inline-block;
+      background: #111111;
+      color: #f2e919;
+      border: 3px solid #ff2f8e;
+      box-shadow: 6px 6px 0 #111111;
+      padding: 0.08em 0.2em;
+      letter-spacing: 0.03em;
+      margin: 6px 0 2px;
+    }
+    .status {
+      background: #111111;
+      color: #f0e300;
+      border: 2px solid #c2185b;
+      padding: 8px 10px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    button {
+      border: 3px solid #111111;
+      border-radius: 1px;
+      background: #111111;
+      color: #f0e300;
+      box-shadow: 4px 4px 0 #c2185b;
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    button.secondary {
+      background: #0e9fbb;
+      color: #111111;
+      box-shadow: 4px 4px 0 #111111;
+    }
+    button.warn {
+      background: #f0e300;
+      color: #111111;
+      box-shadow: 4px 4px 0 #111111;
+    }
+    button.danger {
+      background: #b71c1c;
+      color: #ffffff;
+      box-shadow: 4px 4px 0 #111111;
+    }
+    button:hover:not(:disabled) {
+      transform: translate(-1px, -1px);
+      box-shadow: 6px 6px 0 #111111;
+    }
+    button:disabled {
+      opacity: 0.45;
+      box-shadow: none;
+    }
+    input {
+      border: 3px solid #111111;
+      border-radius: 1px;
+      background: #ffffff;
+      font-family: "Arial Black", Impact, "Trebuchet MS", sans-serif;
+      font-size: 0.96rem;
+      width: 170px;
+    }
+    .qr-wrap svg {
+      border: 3px solid #111111;
+      border-radius: 2px;
+      box-shadow: 4px 4px 0 #c2185b;
+    }
+    table {
+      font-size: 0.95rem;
+    }
+    th, td {
+      border-bottom: 2px solid #111111;
+    }
+    #sectionDescription {
+      background: #ffffff;
+      border: 3px solid #111111;
+      border-left: 14px solid #c2185b;
+      border-radius: 2px;
+      box-shadow: 6px 6px 0 #111111;
+      color: #111111;
+      line-height: 1.55;
+    }
+    #sectionDescription h1,
+    #sectionDescription h2,
+    #sectionDescription h3 {
+      display: inline-block;
+      background: #111111;
+      color: #f0e300;
+      box-shadow: 3px 3px 0 #c2185b;
+      padding: 0.08em 0.3em;
+      margin: 0.18em 0 0.5em;
+      transform: none;
+    }
+    #sectionDescription a {
+      color: #c2185b;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 2px;
+    }
+    .allocation-instructions {
+      border: 4px solid #111111;
+      border-radius: 2px;
+      background: repeating-linear-gradient(-8deg, #c2185b 0 26px, #f0e300 26px 52px);
+      box-shadow: 8px 8px 0 #111111;
+      animation: none;
+    }
+    .allocation-banner {
+      color: #111111;
+      text-shadow: 2px 2px 0 #f2e919;
+    }
+    .allocation-subtitle {
+      color: #111111;
+      background: rgba(255, 255, 255, 0.84);
+      border: 2px solid #111111;
+      padding: 6px 8px;
+      display: inline-block;
+    }
+    .allocation-steps {
+      color: #111111;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #111111;
+      padding: 8px 10px 8px 28px;
+    }
+    .upcoming-card {
+      background: #ffffff;
+      border: 3px solid #111111;
+      border-radius: 2px;
+      box-shadow: 4px 4px 0 #0e9fbb;
+      color: #111111;
+    }
+    .upcoming-card-title {
+      color: #111111;
+      font-weight: 900;
+    }
+    .upcoming-card-meta {
+      color: #1f1f1f;
+      font-weight: 700;
+    }
+    .pre-pitch-warning {
+      border: 3px solid #111111;
+      border-radius: 2px;
+      background: #0e9fbb;
+      box-shadow: 6px 6px 0 #111111;
+    }
+    .pre-pitch-eyebrow,
+    .pre-pitch-timer,
+    .pre-pitch-first,
+    .pre-pitch-order {
+      color: #111111;
+    }
+    .pitch-round-panel {
+      border: 3px solid #111111;
+      border-radius: 2px;
+      background: #ffffff;
+      box-shadow: 6px 6px 0 #0e9fbb;
+    }
+    #pitchGroupMembers {
+      margin: 8px 0 0;
+      display: inline-block;
+      background: #f0e300;
+      color: #111111;
+      border: 2px solid #111111;
+      padding: 6px 8px;
+      font-weight: 900;
+      letter-spacing: 0.01em;
+    }
+    .pitch-round-title {
+      color: #f0e300;
+      background: #111111;
+      display: inline-block;
+      padding: 0.14em 0.36em;
+      box-shadow: 3px 3px 0 #c2185b;
+      transform: none;
+    }
+    .pitch-round-timer {
+      color: #111111;
+      font-weight: 900;
+    }
+    .pitch-bar-track {
+      border: 3px solid #111111;
+      border-radius: 2px;
+      background: #ffffff;
+    }
+    .pitch-bar-fill {
+      background: #c2185b;
+    }
+    .pitch-bar-fill.gap {
+      background: #0e9fbb;
+    }
+    .pitch-bar-fill.danger {
+      background: #b71c1c;
+    }
+    .award-results-panel {
+      border: 3px solid #111111;
+      border-radius: 2px;
+      background: #f0e300;
+      box-shadow: 7px 7px 0 #c2185b;
+    }
+    .award-title {
+      color: #f0e300;
+      background: #111111;
+      display: inline-block;
+      padding: 0.14em 0.34em;
+      box-shadow: 3px 3px 0 #0e9fbb;
+      transform: none;
+    }
+    .award-winner,
+    .award-list {
+      color: #111111;
+      font-weight: 900;
+    }
     @media (max-width: 950px) {
       .layout {
         grid-template-columns: 1fr;
@@ -306,9 +674,11 @@
 
         <div id="timedPanel" class="hidden">
           <h2 id="sectionTitle">Section title</h2>
-          <p id="sectionDescription" class="muted"></p>
-          <div class="timer" id="timerText">00:00</div>
-          <p class="muted">Status: <span id="timerStatus">ready</span></p>
+          <div id="sectionDescription" class="muted"></div>
+          <div id="countdownPanel">
+            <div class="timer" id="timerText">00:00</div>
+            <p class="muted">Status: <span id="timerStatus">ready</span></p>
+          </div>
           <div id="prePitchWarningPanel" class="pre-pitch-warning hidden">
             <p class="pre-pitch-eyebrow">Get Ready For Pitch</p>
             <p id="prePitchWarningTimer" class="pre-pitch-timer">00:20</p>
@@ -318,12 +688,16 @@
           <div id="pitchRoundPanel" class="pitch-round-panel hidden">
             <h3 id="pitchRoundLabel" class="pitch-round-title">Group 1 of 1 pitching</h3>
             <p id="pitchRoundTimer" class="pitch-round-timer">01:00</p>
-            <p id="pitchSectorNow" class="muted" style="margin:0 0 8px">Now pitching: -</p>
+            <p id="pitchSectorNow" class="muted" style="margin:0 0 8px">Next: -</p>
+            <p id="pitchGroupMembers" class="muted">Members: -</p>
             <div class="pitch-bar-track">
               <div id="pitchRoundBar" class="pitch-bar-fill"></div>
             </div>
             <p id="pitchOrder" class="muted" style="margin-top:8px">Running order: -</p>
             <p id="pitchRoundHint" class="muted" style="margin-top:8px">Each group has 1 minute, with 10 seconds changeover.</p>
+            <div id="pitchRoundControls" class="pitch-round-controls hidden">
+              <button id="nextPitchBtn" class="secondary">Next Pitch</button>
+            </div>
           </div>
           <div id="awardResultsPanel" class="award-results-panel hidden">
             <h3 class="award-title">Live Vote Results</h3>
@@ -339,7 +713,15 @@
 
         <div id="allocationPanel" class="hidden">
           <h2>Sector Allocation</h2>
-          <p>Students can scan the fixed QR code on the right and enter their name to get their group and sector.</p>
+          <div class="allocation-instructions">
+            <p class="allocation-banner">Scan The Join QR Code Now</p>
+            <p class="allocation-subtitle">Use the <strong>Student Join QR</strong> panel on the right side of this screen.</p>
+            <ol class="allocation-steps">
+              <li>Open your phone camera and scan the join QR code.</li>
+              <li>Enter your full name on the join page.</li>
+              <li>Submit to receive your group number and assigned sector.</li>
+            </ol>
+          </div>
         </div>
 
         <div id="completedPanel" class="hidden">
@@ -443,7 +825,6 @@
     const edithHoldSeconds = 8;
     const edithFadeOutSeconds = 2;
     const edithTotalSeconds = edithFadeInSeconds + edithHoldSeconds + edithFadeOutSeconds;
-    const koolMaxPlaybackSeconds = 30;
     let edithVolumeIntervalId = null;
     let edithStopTimeoutId = null;
     let edithTriggeredPitchKeys = new Set();
@@ -452,7 +833,6 @@
     let awardRevealTimeoutId = null;
     let drumrollEndedHandler = null;
     let koolEndedHandler = null;
-    let koolStopTimeoutId = null;
     const confettiCanvas = document.getElementById('confettiCanvas');
     const confettiCtx = confettiCanvas.getContext('2d');
     const confettiEnabled = Boolean(confettiCtx);
@@ -492,6 +872,135 @@
         }
       }
       return true;
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeLinkUrl(urlText) {
+      const raw = String(urlText || '').trim();
+      if (!raw) {
+        return '#';
+      }
+
+      try {
+        const url = new URL(raw, window.location.origin);
+        const protocol = url.protocol.toLowerCase();
+        if (protocol === 'http:' || protocol === 'https:' || protocol === 'mailto:') {
+          return url.href;
+        }
+      } catch (_) {
+        return '#';
+      }
+
+      return '#';
+    }
+
+    function renderInlineMarkdown(text) {
+      const placeholders = [];
+      let html = escapeHtml(text);
+
+      html = html.replace(/`([^`]+)`/g, (_, code) => {
+        const token = `%%CODE${placeholders.length}%%`;
+        placeholders.push(`<code>${code}</code>`);
+        return token;
+      });
+
+      html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
+        const safeHref = escapeHtml(safeLinkUrl(href));
+        return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+      });
+
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+
+      placeholders.forEach((replacement, index) => {
+        html = html.replace(`%%CODE${index}%%`, replacement);
+      });
+
+      return html;
+    }
+
+    function renderMarkdown(markdownText) {
+      const lines = String(markdownText || '').replace(/\r\n?/g, '\n').split('\n');
+      const out = [];
+      let paragraph = [];
+      let activeList = null;
+
+      function flushParagraph() {
+        if (!paragraph.length) {
+          return;
+        }
+        out.push(`<p>${paragraph.map((line) => renderInlineMarkdown(line)).join('<br>')}</p>`);
+        paragraph = [];
+      }
+
+      function closeList() {
+        if (!activeList) {
+          return;
+        }
+        out.push(`</${activeList}>`);
+        activeList = null;
+      }
+
+      for (const rawLine of lines) {
+        const line = rawLine.replace(/\s+$/, '');
+        const trimmed = line.trim();
+
+        if (!trimmed) {
+          flushParagraph();
+          closeList();
+          continue;
+        }
+
+        const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+        if (headingMatch) {
+          flushParagraph();
+          closeList();
+          const level = headingMatch[1].length;
+          out.push(`<h${level}>${renderInlineMarkdown(headingMatch[2])}</h${level}>`);
+          continue;
+        }
+
+        const unorderedMatch = line.match(/^\s*[-*+]\s+(.+)$/);
+        if (unorderedMatch) {
+          flushParagraph();
+          if (activeList !== 'ul') {
+            closeList();
+            activeList = 'ul';
+            out.push('<ul>');
+          }
+          out.push(`<li>${renderInlineMarkdown(unorderedMatch[1])}</li>`);
+          continue;
+        }
+
+        const orderedMatch = line.match(/^\s*\d+\.\s+(.+)$/);
+        if (orderedMatch) {
+          flushParagraph();
+          if (activeList !== 'ol') {
+            closeList();
+            activeList = 'ol';
+            out.push('<ol>');
+          }
+          out.push(`<li>${renderInlineMarkdown(orderedMatch[1])}</li>`);
+          continue;
+        }
+
+        closeList();
+        paragraph.push(trimmed);
+      }
+
+      flushParagraph();
+      closeList();
+      return out.join('');
     }
 
     function isPitchRoundTitle(title) {
@@ -602,6 +1111,28 @@
       const cycle = Math.floor((group - 1) / sectorNames.length) + 1;
       const baseName = sectorNames[index];
       return cycle === 1 ? baseName : `${baseName} (${cycle})`;
+    }
+
+    function namesForGroup(state, groupNumber) {
+      const group = Number(groupNumber || 0);
+      if (group < 1) {
+        return [];
+      }
+      const names = [];
+      for (const row of state.assignments || []) {
+        if (Number(row.group_number || 0) === group && row.name) {
+          names.push(String(row.name));
+        }
+      }
+      return names;
+    }
+
+    function groupMembersLabel(state, groupNumber, labelPrefix = 'Members') {
+      const names = namesForGroup(state, groupNumber);
+      if (!names.length) {
+        return `${labelPrefix}: (none listed)`;
+      }
+      return `${labelPrefix}: ${names.join(', ')}`;
     }
 
     function pitchRunningOrderText(state, groupCount) {
@@ -768,10 +1299,6 @@
         window.clearTimeout(awardRevealTimeoutId);
         awardRevealTimeoutId = null;
       }
-      if (koolStopTimeoutId !== null) {
-        window.clearTimeout(koolStopTimeoutId);
-        koolStopTimeoutId = null;
-      }
     }
 
     function stopDrumroll() {
@@ -790,10 +1317,6 @@
       }
       koolAudio.pause();
       koolAudio.currentTime = 0;
-      if (koolStopTimeoutId !== null) {
-        window.clearTimeout(koolStopTimeoutId);
-        koolStopTimeoutId = null;
-      }
     }
 
     function refreshAwardUi() {
@@ -806,10 +1329,6 @@
       stopKoolCelebration();
       koolAudio.currentTime = 0;
       koolEndedHandler = () => {
-        if (koolStopTimeoutId !== null) {
-          window.clearTimeout(koolStopTimeoutId);
-          koolStopTimeoutId = null;
-        }
         koolEndedHandler = null;
       };
       koolAudio.addEventListener('ended', koolEndedHandler, { once: true });
@@ -817,11 +1336,6 @@
       if (playAttempt && typeof playAttempt.catch === 'function') {
         playAttempt.catch(() => {});
       }
-      koolStopTimeoutId = window.setTimeout(() => {
-        koolAudio.pause();
-        koolAudio.currentTime = 0;
-        koolStopTimeoutId = null;
-      }, koolMaxPlaybackSeconds * 1000);
     }
 
     function revealAwardResults(sectionId) {
@@ -1031,11 +1545,17 @@
       const hint = document.getElementById('pitchRoundHint');
       const bar = document.getElementById('pitchRoundBar');
       const sectorNow = document.getElementById('pitchSectorNow');
+      const members = document.getElementById('pitchGroupMembers');
       const order = document.getElementById('pitchOrder');
+      const controls = document.getElementById('pitchRoundControls');
+      const nextPitchBtn = document.getElementById('nextPitchBtn');
 
       const pitchState = computePitchRoundState(state);
       if (!pitchState) {
         panel.classList.add('hidden');
+        controls.classList.add('hidden');
+        nextPitchBtn.disabled = true;
+        members.textContent = 'Members: -';
         return;
       }
 
@@ -1046,9 +1566,14 @@
       order.textContent = pitchRunningOrderText(state, pitchState.groupCount);
 
       if (pitchState.mode === 'pitch') {
-        label.textContent = `Group ${pitchState.group} of ${pitchState.groupCount} pitching`;
+        const currentSector = sectorForGroup(state, pitchState.group);
+        label.textContent = `Group ${pitchState.group} (${currentSector}) pitch now!`;
         timer.textContent = formatSeconds(pitchState.remaining);
-        sectorNow.textContent = `Now pitching: ${sectorForGroup(state, pitchState.group)}`;
+        const nextLabel = pitchState.group < pitchState.groupCount
+          ? sectorForGroup(state, pitchState.group + 1)
+          : 'End of pitch round';
+        sectorNow.textContent = `Next: ${nextLabel}`;
+        members.textContent = groupMembersLabel(state, pitchState.group, 'Members');
         hint.textContent = '1-minute pitch in progress.';
         if (pitchState.remaining <= 20) {
           timer.classList.add('danger');
@@ -1058,14 +1583,31 @@
       } else if (pitchState.mode === 'gap') {
         label.textContent = `Changeover before Group ${pitchState.nextGroup}`;
         timer.textContent = formatSeconds(pitchState.remaining);
-        sectorNow.textContent = `Up next: ${sectorForGroup(state, pitchState.nextGroup)}`;
+        sectorNow.textContent = `Next: ${sectorForGroup(state, pitchState.nextGroup)}`;
+        members.textContent = groupMembersLabel(state, pitchState.nextGroup, 'Next group members');
         hint.textContent = '10-second transition.';
         bar.classList.add('gap');
       } else {
         label.textContent = `Pitch round complete`;
         timer.textContent = '00:00';
         sectorNow.textContent = 'Pitching finished for this round.';
+        members.textContent = 'Members: -';
         hint.textContent = 'Waiting for the next workshop section.';
+      }
+
+      const canAdvancePitch = Boolean(state.facilitator_unlocked) && pitchState.mode !== 'done';
+      controls.classList.toggle('hidden', !canAdvancePitch);
+      nextPitchBtn.disabled = !canAdvancePitch;
+      if (pitchState.mode === 'pitch') {
+        if (pitchState.group < pitchState.groupCount) {
+          nextPitchBtn.textContent = `Next Pitch (Group ${pitchState.group + 1})`;
+        } else {
+          nextPitchBtn.textContent = 'Finish Pitch Round';
+        }
+      } else if (pitchState.mode === 'gap') {
+        nextPitchBtn.textContent = `Start Group ${pitchState.nextGroup} Now`;
+      } else {
+        nextPitchBtn.textContent = 'Next Pitch';
       }
 
       bar.style.width = `${pitchState.progressPercent}%`;
@@ -1140,6 +1682,10 @@
       document.getElementById('voteQrPanel').classList.toggle('hidden', !showVoteQr);
       document.getElementById('timerStatus').textContent = state.timer_status;
       document.getElementById('timerText').textContent = formatSeconds(state.remaining_seconds);
+      const hideMainCountdown = state.phase === 'timed' && (
+        Number(state.current_section?.order || 0) === 1 || isPitchRoundSection(state)
+      );
+      document.getElementById('countdownPanel').classList.toggle('hidden', hideMainCountdown);
 
       const allocationPanel = document.getElementById('allocationPanel');
       const timedPanel = document.getElementById('timedPanel');
@@ -1151,7 +1697,9 @@
 
       if (state.current_section) {
         document.getElementById('sectionTitle').textContent = state.current_section.title;
-        document.getElementById('sectionDescription').textContent = state.current_section.description || '';
+        document.getElementById('sectionDescription').innerHTML = renderMarkdown(state.current_section.description || '');
+      } else {
+        document.getElementById('sectionDescription').textContent = '';
       }
       renderPrePitchWarning(state);
       renderPitchRound(state);
@@ -1276,6 +1824,10 @@
 
     document.getElementById('nextBtn').addEventListener('click', () => {
       runAction(() => postJson('/api/control/next'));
+    });
+
+    document.getElementById('nextPitchBtn').addEventListener('click', () => {
+      runAction(() => postJson('/api/control/pitch/next'));
     });
 
     document.getElementById('backBtn').addEventListener('click', () => {

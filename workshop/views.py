@@ -21,6 +21,7 @@ from qrcode.image.svg import SvgPathImage
 
 from .models import Sector, StudentAssignment, WorkshopRun, WorkshopSection, WorkshopSettings, WorkshopVote
 from .services import (
+    advance_pitch_slot,
     claim_assignment,
     move_to_previous_section,
     move_to_next_section,
@@ -356,6 +357,32 @@ def api_control_next(request: HttpRequest) -> JsonResponse:
         run = WorkshopRun.get_solo()
         keep_running = run.timer_status == WorkshopRun.TIMER_RUNNING
         move_to_next_section(run, keep_running=keep_running, reference_end_at=timezone.now())
+
+    return JsonResponse(_state_payload(request))
+
+
+@csrf_exempt
+@require_POST
+def api_control_next_pitch(request: HttpRequest) -> JsonResponse:
+    if not _is_facilitator(request):
+        return _forbidden()
+
+    with transaction.atomic():
+        run = WorkshopRun.get_solo()
+        reconcile_run(run)
+        run.refresh_from_db()
+
+        if not _section_title_matches(run.current_section, 'pitch', 'round'):
+            return JsonResponse({'error': 'Next pitch is only available during pitch rounds.'}, status=400)
+        if run.timer_status not in (WorkshopRun.TIMER_RUNNING, WorkshopRun.TIMER_PAUSED):
+            return JsonResponse({'error': 'Pitch timer must be running or paused.'}, status=400)
+
+        settings = WorkshopSettings.get_solo()
+        advanced = advance_pitch_slot(run, settings=settings, reference_time=timezone.now())
+        if not advanced:
+            return JsonResponse({'error': 'No further pitch slots to advance.'}, status=400)
+
+        reconcile_run(run)
 
     return JsonResponse(_state_payload(request))
 
