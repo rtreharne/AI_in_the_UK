@@ -1,0 +1,541 @@
+﻿[
+{
+  "model": "workshop.workshopsection",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "title": "Workshop introduction from facilitator",
+    "description": "",
+    "duration_seconds": 420,
+    "enabled": true
+  }
+},
+{
+  "model": "workshop.workshopsection",
+  "pk": 2,
+  "fields": {
+    "order": 2,
+    "title": "Research and first pitch preparation",
+    "description": "",
+    "duration_seconds": 900,
+    "enabled": true
+  }
+},
+{
+  "model": "workshop.workshopsection",
+  "pk": 3,
+  "fields": {
+    "order": 3,
+    "title": "First pitch round",
+    "description": "",
+    "duration_seconds": 480,
+    "enabled": true
+  }
+},
+{
+  "model": "workshop.workshopsection",
+  "pk": 4,
+  "fields": {
+    "order": 4,
+    "title": "Research and anti-pitch preparation",
+    "description": "",
+    "duration_seconds": 600,
+    "enabled": true
+  }
+},
+{
+  "model": "workshop.workshopsection",
+  "pk": 5,
+  "fields": {
+    "order": 5,
+    "title": "Anti-pitch round",
+    "description": "",
+    "duration_seconds": 480,
+    "enabled": true
+  }
+},
+{
+  "model": "workshop.workshopsection",
+  "pk": 6,
+  "fields": {
+    "order": 6,
+    "title": "Final revision",
+    "description": "",
+    "duration_seconds": 600,
+    "enabled": true
+  }
+},
+{
+  "model": "workshop.workshopsection",
+  "pk": 7,
+  "fields": {
+    "order": 7,
+    "title": "Final pitch round",
+    "description": "",
+    "duration_seconds": 480,
+    "enabled": true
+  }
+},
+{
+  "model": "workshop.workshopsection",
+  "pk": 8,
+  "fields": {
+    "order": 8,
+    "title": "Vote and Feedback",
+    "description": "",
+    "duration_seconds": 600,
+    "enabled": true
+  }
+},
+{
+  "model": "workshop.workshopsection",
+  "pk": 9,
+  "fields": {
+    "order": 9,
+    "title": "Award to best AI solution",
+    "description": "",
+    "duration_seconds": 120,
+    "enabled": true
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "name": "Healthcare"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 2,
+  "fields": {
+    "order": 2,
+    "name": "Education"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 3,
+  "fields": {
+    "order": 3,
+    "name": "Transport"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 4,
+  "fields": {
+    "order": 4,
+    "name": "Energy"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 5,
+  "fields": {
+    "order": 5,
+    "name": "Food"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 6,
+  "fields": {
+    "order": 6,
+    "name": "Environment"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 7,
+  "fields": {
+    "order": 7,
+    "name": "Social Care"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 8,
+  "fields": {
+    "order": 8,
+    "name": "Housing"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 9,
+  "fields": {
+    "order": 9,
+    "name": "Justice"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 10,
+  "fields": {
+    "order": 10,
+    "name": "Employment"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 11,
+  "fields": {
+    "order": 11,
+    "name": "Defence"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 12,
+  "fields": {
+    "order": 12,
+    "name": "Media"
+  }
+},
+{
+  "model": "workshop.sector",
+  "pk": 13,
+  "fields": {
+    "order": 13,
+    "name": "Tourism"
+  }
+},
+{
+  "model": "workshop.workshopsettings",
+  "pk": 1,
+  "fields": {
+    "singleton_key": 1,
+    "predicted_class_size": 40,
+    "target_group_size": 5,
+    "created_at": "2026-04-21T09:24:49.508Z",
+    "updated_at": "2026-04-21T09:24:49.508Z"
+  }
+},
+{
+  "model": "workshop.workshoprun",
+  "pk": 1,
+  "fields": {
+    "singleton_key": 1,
+    "join_open": false,
+    "timer_status": "completed",
+    "current_section": null,
+    "end_at": null,
+    "paused_remaining_seconds": 0,
+    "beep_enabled": true,
+    "started_at": "2026-04-21T14:35:33.278Z",
+    "completed_at": "2026-04-21T14:47:46.658Z",
+    "created_at": "2026-04-21T09:24:49.514Z",
+    "updated_at": "2026-04-21T14:48:39.354Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 87,
+  "fields": {
+    "name": "Hari Seldon",
+    "normalized_name": "hari seldon",
+    "group_number": 1,
+    "sector_name": "Healthcare",
+    "created_at": "2026-04-21T14:35:31.593Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 88,
+  "fields": {
+    "name": "Gaal Dornick",
+    "normalized_name": "gaal dornick",
+    "group_number": 1,
+    "sector_name": "Healthcare",
+    "created_at": "2026-04-21T14:35:31.596Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 89,
+  "fields": {
+    "name": "Salvor Hardin",
+    "normalized_name": "salvor hardin",
+    "group_number": 1,
+    "sector_name": "Healthcare",
+    "created_at": "2026-04-21T14:35:31.596Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 90,
+  "fields": {
+    "name": "Hober Mallow",
+    "normalized_name": "hober mallow",
+    "group_number": 1,
+    "sector_name": "Healthcare",
+    "created_at": "2026-04-21T14:35:31.597Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 91,
+  "fields": {
+    "name": "Bayta Darell",
+    "normalized_name": "bayta darell",
+    "group_number": 2,
+    "sector_name": "Education",
+    "created_at": "2026-04-21T14:35:31.597Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 92,
+  "fields": {
+    "name": "Toran Darell",
+    "normalized_name": "toran darell",
+    "group_number": 2,
+    "sector_name": "Education",
+    "created_at": "2026-04-21T14:35:31.598Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 93,
+  "fields": {
+    "name": "Arkady Darell",
+    "normalized_name": "arkady darell",
+    "group_number": 2,
+    "sector_name": "Education",
+    "created_at": "2026-04-21T14:35:31.598Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 94,
+  "fields": {
+    "name": "The Mule",
+    "normalized_name": "the mule",
+    "group_number": 2,
+    "sector_name": "Education",
+    "created_at": "2026-04-21T14:35:31.599Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 95,
+  "fields": {
+    "name": "Han Pritcher",
+    "normalized_name": "han pritcher",
+    "group_number": 3,
+    "sector_name": "Transport",
+    "created_at": "2026-04-21T14:35:31.600Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 96,
+  "fields": {
+    "name": "Ebling Mis",
+    "normalized_name": "ebling mis",
+    "group_number": 3,
+    "sector_name": "Transport",
+    "created_at": "2026-04-21T14:35:31.601Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 97,
+  "fields": {
+    "name": "Bel Riose",
+    "normalized_name": "bel riose",
+    "group_number": 3,
+    "sector_name": "Transport",
+    "created_at": "2026-04-21T14:35:31.601Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 98,
+  "fields": {
+    "name": "Gladia Delmarre",
+    "normalized_name": "gladia delmarre",
+    "group_number": 3,
+    "sector_name": "Transport",
+    "created_at": "2026-04-21T14:35:31.602Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 99,
+  "fields": {
+    "name": "R Daneel Olivaw",
+    "normalized_name": "r daneel olivaw",
+    "group_number": 4,
+    "sector_name": "Energy",
+    "created_at": "2026-04-21T14:35:31.604Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 100,
+  "fields": {
+    "name": "R Giskard Reventlov",
+    "normalized_name": "r giskard reventlov",
+    "group_number": 4,
+    "sector_name": "Energy",
+    "created_at": "2026-04-21T14:35:31.604Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 101,
+  "fields": {
+    "name": "Elijah Baley",
+    "normalized_name": "elijah baley",
+    "group_number": 4,
+    "sector_name": "Energy",
+    "created_at": "2026-04-21T14:35:31.604Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 102,
+  "fields": {
+    "name": "R Jander Panell",
+    "normalized_name": "r jander panell",
+    "group_number": 4,
+    "sector_name": "Energy",
+    "created_at": "2026-04-21T14:35:31.604Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 103,
+  "fields": {
+    "name": "Susan Calvin",
+    "normalized_name": "susan calvin",
+    "group_number": 5,
+    "sector_name": "Food",
+    "created_at": "2026-04-21T14:35:31.605Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 104,
+  "fields": {
+    "name": "Pieter Campanel",
+    "normalized_name": "pieter campanel",
+    "group_number": 5,
+    "sector_name": "Food",
+    "created_at": "2026-04-21T14:35:31.605Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 105,
+  "fields": {
+    "name": "Bel Arvardan",
+    "normalized_name": "bel arvardan",
+    "group_number": 5,
+    "sector_name": "Food",
+    "created_at": "2026-04-21T14:35:31.605Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 106,
+  "fields": {
+    "name": "Janov Pelorat",
+    "normalized_name": "janov pelorat",
+    "group_number": 5,
+    "sector_name": "Food",
+    "created_at": "2026-04-21T14:35:31.605Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 107,
+  "fields": {
+    "name": "Sura Novi",
+    "normalized_name": "sura novi",
+    "group_number": 6,
+    "sector_name": "Environment",
+    "created_at": "2026-04-21T14:35:31.606Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 108,
+  "fields": {
+    "name": "Preem Palver",
+    "normalized_name": "preem palver",
+    "group_number": 6,
+    "sector_name": "Environment",
+    "created_at": "2026-04-21T14:35:31.606Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 109,
+  "fields": {
+    "name": "Dors Venabili",
+    "normalized_name": "dors venabili",
+    "group_number": 6,
+    "sector_name": "Environment",
+    "created_at": "2026-04-21T14:35:31.606Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 110,
+  "fields": {
+    "name": "Yugo Amaryl",
+    "normalized_name": "yugo amaryl",
+    "group_number": 6,
+    "sector_name": "Environment",
+    "created_at": "2026-04-21T14:35:31.606Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 111,
+  "fields": {
+    "name": "Eto Demerzel",
+    "normalized_name": "eto demerzel",
+    "group_number": 7,
+    "sector_name": "Social Care",
+    "created_at": "2026-04-21T14:35:31.607Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 112,
+  "fields": {
+    "name": "Wanda Seldon",
+    "normalized_name": "wanda seldon",
+    "group_number": 7,
+    "sector_name": "Social Care",
+    "created_at": "2026-04-21T14:35:31.607Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 113,
+  "fields": {
+    "name": "Raych Seldon",
+    "normalized_name": "raych seldon",
+    "group_number": 7,
+    "sector_name": "Social Care",
+    "created_at": "2026-04-21T14:35:31.607Z"
+  }
+},
+{
+  "model": "workshop.studentassignment",
+  "pk": 114,
+  "fields": {
+    "name": "Chetter Hummin",
+    "normalized_name": "chetter hummin",
+    "group_number": 7,
+    "sector_name": "Social Care",
+    "created_at": "2026-04-21T14:35:31.607Z"
+  }
+}
+]
