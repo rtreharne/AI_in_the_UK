@@ -1,0 +1,22 @@
+﻿services:
+  web:
+    build:
+      context: .
+    ports:
+      - "8007:8000"
+    environment:
+      DJANGO_DEBUG: "1"
+      DJANGO_ALLOWED_HOSTS: "*"
+      WORKSHOP_CONTROL_PIN: "1234"
+      SQLITE_PATH: "/app/data/db.sqlite3"
+      TZ: "Europe/London"
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py seed_workshop_data &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - workshop_data:/app/data
+
+volumes:
+  workshop_data:

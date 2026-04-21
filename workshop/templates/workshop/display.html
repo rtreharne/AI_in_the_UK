@@ -1,0 +1,1184 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workshop Display</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #172b4d;
+      --accent: #0f766e;
+      --warn: #b45309;
+      --danger: #b91c1c;
+      --muted: #5b6474;
+      --border: #d7deeb;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top right, #d6f5ef, var(--bg));
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      min-height: 100vh;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 6px 24px rgba(23, 43, 77, 0.08);
+    }
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+    .timer {
+      font-size: 5rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin: 8px 0 0;
+    }
+    .phase {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e4f8f4;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #476387;
+    }
+    button.warn {
+      background: var(--warn);
+    }
+    button.danger {
+      background: var(--danger);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .status {
+      margin-top: 10px;
+      min-height: 1.2em;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .qr-wrap {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .qr-panel {
+      position: sticky;
+      top: 16px;
+    }
+    .qr-wrap svg {
+      width: 150px;
+      height: 150px;
+      background: #fff;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .qr-large svg {
+      width: 190px;
+      height: 190px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      padding: 7px 5px;
+    }
+    .scroll {
+      max-height: 300px;
+      overflow: auto;
+    }
+    .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .upcoming-wrap {
+      margin-top: 18px;
+    }
+    .upcoming-heading {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+    }
+    .upcoming-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .upcoming-card {
+      background: #eef1f6;
+      border: 1px solid #d6dce7;
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #6b7280;
+    }
+    .upcoming-card-title {
+      font-weight: 700;
+      margin: 0 0 4px;
+      color: #4b5563;
+    }
+    .upcoming-card-meta {
+      margin: 0;
+      font-size: 0.86rem;
+      color: #6b7280;
+    }
+    .pitch-round-panel {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f3f6fb;
+      border: 1px solid #d7deeb;
+    }
+    .award-results-panel {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #ecfdf3;
+      border: 2px solid #0f766e;
+      box-shadow: 0 8px 20px rgba(15, 118, 110, 0.14);
+    }
+    .award-title {
+      margin: 0 0 8px;
+      color: #065f46;
+      font-size: 1.05rem;
+    }
+    .award-winner {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #064e3b;
+    }
+    .award-list {
+      margin: 0;
+      padding-left: 20px;
+      color: #065f46;
+      font-weight: 600;
+    }
+    .confetti-layer {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .pre-pitch-warning {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fff7ed;
+      border: 2px solid #b45309;
+      box-shadow: 0 8px 20px rgba(180, 83, 9, 0.15);
+    }
+    .pre-pitch-eyebrow {
+      margin: 0 0 6px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #9a3412;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .pre-pitch-timer {
+      margin: 0 0 8px;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #9a3412;
+    }
+    .pre-pitch-first {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #7c2d12;
+    }
+    .pre-pitch-order {
+      margin: 8px 0 0;
+      color: #7c2d12;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    .pitch-round-title {
+      margin: 0 0 6px;
+      font-size: 1rem;
+      color: #374151;
+    }
+    .pitch-round-timer {
+      font-size: 2.1rem;
+      font-weight: 700;
+      margin: 0 0 8px;
+      color: #1f2937;
+    }
+    .pitch-round-timer.danger {
+      color: #b91c1c;
+      animation: timer-flash 1s steps(2, start) infinite;
+    }
+    .pitch-bar-track {
+      width: 100%;
+      height: 14px;
+      border-radius: 999px;
+      background: #d9e2ef;
+      overflow: hidden;
+      border: 1px solid #c8d4e5;
+    }
+    .pitch-bar-fill {
+      height: 100%;
+      width: 100%;
+      background: #0f766e;
+      transition: width 0.3s linear;
+    }
+    .pitch-bar-fill.gap {
+      background: #b45309;
+    }
+    .pitch-bar-fill.danger {
+      background: #b91c1c;
+      animation: timer-flash 1s steps(2, start) infinite;
+    }
+    @keyframes timer-flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    input {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 1rem;
+      width: 160px;
+    }
+    @media (max-width: 950px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .timer {
+        font-size: 3.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div>
+      <section class="panel">
+        <h1>AI in the UK Workshop</h1>
+
+        <div id="timedPanel" class="hidden">
+          <h2 id="sectionTitle">Section title</h2>
+          <p id="sectionDescription" class="muted"></p>
+          <div class="timer" id="timerText">00:00</div>
+          <p class="muted">Status: <span id="timerStatus">ready</span></p>
+          <div id="prePitchWarningPanel" class="pre-pitch-warning hidden">
+            <p class="pre-pitch-eyebrow">Get Ready For Pitch</p>
+            <p id="prePitchWarningTimer" class="pre-pitch-timer">00:20</p>
+            <p id="prePitchFirst" class="pre-pitch-first">First up: Group 1</p>
+            <p id="prePitchOrder" class="pre-pitch-order">Running order: -</p>
+          </div>
+          <div id="pitchRoundPanel" class="pitch-round-panel hidden">
+            <h3 id="pitchRoundLabel" class="pitch-round-title">Group 1 of 1 pitching</h3>
+            <p id="pitchRoundTimer" class="pitch-round-timer">01:00</p>
+            <p id="pitchSectorNow" class="muted" style="margin:0 0 8px">Now pitching: -</p>
+            <div class="pitch-bar-track">
+              <div id="pitchRoundBar" class="pitch-bar-fill"></div>
+            </div>
+            <p id="pitchOrder" class="muted" style="margin-top:8px">Running order: -</p>
+            <p id="pitchRoundHint" class="muted" style="margin-top:8px">Each group has 1 minute, with 10 seconds changeover.</p>
+          </div>
+          <div id="awardResultsPanel" class="award-results-panel hidden">
+            <h3 class="award-title">Live Vote Results</h3>
+            <p id="awardSummary" class="muted">0 votes submitted.</p>
+            <p id="awardWinner" class="award-winner">Waiting for votes...</p>
+            <ol id="awardResultsList" class="award-list"></ol>
+          </div>
+          <div class="upcoming-wrap">
+            <h3 class="upcoming-heading">Coming Up</h3>
+            <div id="upcomingSections" class="upcoming-grid"></div>
+          </div>
+        </div>
+
+        <div id="allocationPanel" class="hidden">
+          <h2>Sector Allocation</h2>
+          <p>Students can scan the fixed QR code on the right and enter their name to get their group and sector.</p>
+        </div>
+
+        <div id="completedPanel" class="hidden">
+          <h2>Workshop Complete</h2>
+          <p>All sections have finished.</p>
+        </div>
+      </section>
+
+    </div>
+
+    <aside>
+      <section class="panel">
+        <h3>Facilitator Control</h3>
+        <div id="unlockPanel">
+          <p class="muted">Unlock controls with your PIN</p>
+          <div class="buttons">
+            <input type="password" id="pinInput" placeholder="PIN" />
+            <button id="unlockBtn">Unlock</button>
+          </div>
+        </div>
+
+        <div id="controlPanel" class="hidden">
+          <div class="buttons">
+            <button id="startPauseBtn">Start</button>
+            <button id="backBtn" class="secondary">Back</button>
+            <button id="nextBtn" class="secondary">Next</button>
+            <button id="toggleJoinBtn" class="secondary">Join: Off</button>
+            <button id="beepBtn" class="warn">Beep: Off</button>
+            <button id="alarmBtn" class="warn">Play Gong</button>
+            <button id="edithBtn" class="warn">Play Edith</button>
+            <button id="resetBtn" class="danger">Reset Run</button>
+            <button id="populateAsimovBtn" class="secondary">Populate Asimov (7x4)</button>
+            <button id="csvBtn" class="secondary">Export CSV</button>
+          </div>
+        </div>
+
+        <div class="status" id="actionStatus"></div>
+      </section>
+
+      <section id="joinQrPanel" class="panel qr-panel" style="margin-top:16px">
+        <h2>Student Join QR</h2>
+        <p class="muted"><strong>Join status:</strong> <span id="joinStatus">Closed</span></p>
+        <p class="muted" id="joinHint">Turn Join on to allow student sign-in.</p>
+        <div id="joinQrWrap" class="qr-wrap qr-large hidden">
+          <div>{{ join_qr_svg|safe }}</div>
+          <div>
+            <p class="muted">Join URL</p>
+            <p><a href="{{ join_url }}" target="_blank" rel="noreferrer">{{ join_url }}</a></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="voteQrPanel" class="panel qr-panel hidden" style="margin-top:16px">
+        <h2>Vote QR</h2>
+        <p class="muted">Scan to vote for your favourite AI solution. Do not vote for your own sector.</p>
+        <div class="qr-wrap qr-large">
+          <div>{{ vote_qr_svg|safe }}</div>
+          <div>
+            <p class="muted">Vote URL</p>
+            <p><a href="{{ vote_url }}" target="_blank" rel="noreferrer">{{ vote_url }}</a></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top:16px">
+        <h2>Live Roster</h2>
+        <p class="muted">Joined students: <span id="joinedCount">0</span></p>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Group</th>
+                <th>Sector</th>
+              </tr>
+            </thead>
+            <tbody id="rosterBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </aside>
+  </div>
+  <canvas id="confettiCanvas" class="confetti-layer hidden"></canvas>
+
+  <script>
+    let currentState = null;
+    let previousTimedSectionId = null;
+    let hasRendered = false;
+    let warnedTwoMinuteSectionId = null;
+    const gongAudio = new Audio('/api/sounds/gong.mp3');
+    gongAudio.preload = 'auto';
+    const edithAudio = new Audio('/api/sounds/edith.mp3');
+    edithAudio.preload = 'auto';
+    edithAudio.volume = 0;
+    const edithMaxVolume = 1.0;
+    const edithFadeInSeconds = 10;
+    const edithHoldSeconds = 8;
+    const edithFadeOutSeconds = 2;
+    const edithTotalSeconds = edithFadeInSeconds + edithHoldSeconds + edithFadeOutSeconds;
+    let edithVolumeIntervalId = null;
+    let edithStopTimeoutId = null;
+    let edithTriggeredPitchKeys = new Set();
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    const confettiEnabled = Boolean(confettiCtx);
+    const confettiColors = ['#0f766e', '#16a34a', '#f59e0b', '#ef4444', '#2563eb', '#ec4899'];
+    let confettiPieces = [];
+    let confettiFrameId = null;
+    let confettiLastMs = 0;
+    let confettiSpawnBudget = 0;
+
+    function formatSeconds(total) {
+      const safe = Math.max(0, Number(total || 0));
+      const min = Math.floor(safe / 60).toString().padStart(2, '0');
+      const sec = Math.floor(safe % 60).toString().padStart(2, '0');
+      return `${min}:${sec}`;
+    }
+
+    function formatDurationLabel(totalSeconds) {
+      const safe = Math.max(0, Number(totalSeconds || 0));
+      if (safe % 60 === 0) {
+        return `${Math.floor(safe / 60)} min`;
+      }
+      return formatSeconds(safe);
+    }
+
+    function isPitchRoundSection(state) {
+      if (!state.current_section || !state.current_section.title) {
+        return false;
+      }
+      return isPitchRoundTitle(state.current_section.title);
+    }
+
+    function sectionTitleIncludes(title, keywords) {
+      const safeTitle = String(title || '').toLowerCase();
+      for (const keyword of keywords) {
+        if (!safeTitle.includes(String(keyword).toLowerCase())) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function isPitchRoundTitle(title) {
+      return sectionTitleIncludes(title, ['pitch', 'round']);
+    }
+
+    function isVoteFeedbackSection(state) {
+      return sectionTitleIncludes(state.current_section?.title, ['vote', 'feedback']);
+    }
+
+    function isAwardSection(state) {
+      return sectionTitleIncludes(state.current_section?.title, ['award']);
+    }
+
+    function isSectionNine(state) {
+      return Number(state.current_section?.order || 0) === 9;
+    }
+
+    function inferGroupCount(state) {
+      const target = Math.max(1, Number(state.settings?.target_group_size || 1));
+      const predicted = Math.max(
+        1,
+        Math.ceil(Number(state.settings?.predicted_class_size || target) / target)
+      );
+
+      let assignedMax = 0;
+      for (const row of state.assignments || []) {
+        assignedMax = Math.max(assignedMax, Number(row.group_number || 0));
+      }
+
+      return Math.max(1, predicted, assignedMax);
+    }
+
+    function computePitchRoundState(state) {
+      if (!isPitchRoundSection(state) || !state.current_section) {
+        return null;
+      }
+
+      const pitchSeconds = 60;
+      const gapSeconds = 10;
+      const groupCount = inferGroupCount(state);
+      const elapsed = Math.max(
+        0,
+        Number(state.current_section.duration_seconds || 0) - Number(state.remaining_seconds || 0)
+      );
+
+      let cursor = 0;
+      for (let group = 1; group <= groupCount; group += 1) {
+        if (elapsed < cursor + pitchSeconds) {
+          const remaining = Math.ceil((cursor + pitchSeconds) - elapsed);
+          return {
+            mode: 'pitch',
+            group,
+            groupCount,
+            remaining,
+            progressPercent: Math.max(0, Math.min(100, (remaining / pitchSeconds) * 100)),
+          };
+        }
+        cursor += pitchSeconds;
+
+        if (group < groupCount) {
+          if (elapsed < cursor + gapSeconds) {
+            const remaining = Math.ceil((cursor + gapSeconds) - elapsed);
+            return {
+              mode: 'gap',
+              nextGroup: group + 1,
+              groupCount,
+              remaining,
+              progressPercent: Math.max(0, Math.min(100, (remaining / gapSeconds) * 100)),
+            };
+          }
+          cursor += gapSeconds;
+        }
+      }
+
+      return {
+        mode: 'done',
+        groupCount,
+        remaining: 0,
+        progressPercent: 0,
+      };
+    }
+
+    function sectorForGroup(state, groupNumber) {
+      const group = Number(groupNumber || 0);
+      if (group < 1) {
+        return `Group ${groupNumber}`;
+      }
+
+      const assignedByGroup = new Map();
+      for (const row of state.assignments || []) {
+        const rowGroup = Number(row.group_number || 0);
+        if (rowGroup > 0 && row.sector_name && !assignedByGroup.has(rowGroup)) {
+          assignedByGroup.set(rowGroup, String(row.sector_name));
+        }
+      }
+
+      if (assignedByGroup.has(group)) {
+        return assignedByGroup.get(group);
+      }
+
+      const sectorNames = Array.isArray(state.sector_catalog) ? state.sector_catalog : [];
+      if (!sectorNames.length) {
+        return `Group ${group}`;
+      }
+
+      const index = (group - 1) % sectorNames.length;
+      const cycle = Math.floor((group - 1) / sectorNames.length) + 1;
+      const baseName = sectorNames[index];
+      return cycle === 1 ? baseName : `${baseName} (${cycle})`;
+    }
+
+    function pitchRunningOrderText(state, groupCount) {
+      const labels = [];
+      for (let group = 1; group <= groupCount; group += 1) {
+        labels.push(`${group}. ${sectorForGroup(state, group)}`);
+      }
+      return `Running order: ${labels.join(' | ')}`;
+    }
+
+    function computePrePitchWarningState(state) {
+      if (
+        state.phase !== 'timed' ||
+        state.timer_status !== 'running' ||
+        !state.current_section ||
+        isPitchRoundSection(state)
+      ) {
+        return null;
+      }
+
+      const sections = Array.isArray(state.sections) ? state.sections : [];
+      const currentOrder = Number(state.current_section.order || 0);
+      const nextSection = sections
+        .filter((section) => Number(section.order || 0) > currentOrder)
+        .sort((a, b) => Number(a.order || 0) - Number(b.order || 0))[0];
+
+      if (!nextSection || !isPitchRoundTitle(nextSection.title)) {
+        return null;
+      }
+
+      const remaining = Number(state.remaining_seconds || 0);
+      if (remaining <= 0 || remaining > 20) {
+        return null;
+      }
+
+      const groupCount = inferGroupCount(state);
+      return {
+        remaining,
+        groupCount,
+        firstLabel: `FIRST UP: Group 1 - ${sectorForGroup(state, 1)}`,
+        orderLabel: pitchRunningOrderText(state, groupCount),
+      };
+    }
+
+    function renderPrePitchWarning(state) {
+      const panel = document.getElementById('prePitchWarningPanel');
+      const timer = document.getElementById('prePitchWarningTimer');
+      const first = document.getElementById('prePitchFirst');
+      const order = document.getElementById('prePitchOrder');
+
+      const warningState = computePrePitchWarningState(state);
+      if (!warningState) {
+        panel.classList.add('hidden');
+        return;
+      }
+
+      panel.classList.remove('hidden');
+      timer.textContent = formatSeconds(warningState.remaining);
+      first.textContent = warningState.firstLabel;
+      order.textContent = warningState.orderLabel;
+    }
+
+    async function fetchState() {
+      const res = await fetch('/api/state');
+      if (!res.ok) {
+        throw new Error('Failed to load state');
+      }
+      const data = await res.json();
+      render(data);
+      currentState = data;
+    }
+
+    function setStatus(text, isError = false) {
+      const node = document.getElementById('actionStatus');
+      node.textContent = text;
+      node.style.color = isError ? '#b91c1c' : '#5b6474';
+    }
+
+    function playTone(durationSeconds = 0.15, frequency = 880, volume = 0.07) {
+      const context = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.value = frequency;
+      gain.gain.value = volume;
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + durationSeconds);
+    }
+
+    function beep() {
+      playTone(0.15, 880, 0.07);
+    }
+
+    function playGong() {
+      gongAudio.currentTime = 0;
+      const playAttempt = gongAudio.play();
+      if (playAttempt && typeof playAttempt.catch === 'function') {
+        playAttempt.catch(() => {});
+      }
+    }
+
+    function clearEdithTimers() {
+      if (edithVolumeIntervalId !== null) {
+        window.clearInterval(edithVolumeIntervalId);
+        edithVolumeIntervalId = null;
+      }
+      if (edithStopTimeoutId !== null) {
+        window.clearTimeout(edithStopTimeoutId);
+        edithStopTimeoutId = null;
+      }
+    }
+
+    function stopEdithWarning() {
+      clearEdithTimers();
+      edithAudio.pause();
+      edithAudio.currentTime = 0;
+      edithAudio.volume = 0;
+    }
+
+    function applyEdithVolumeEnvelope(elapsedSeconds) {
+      let volume = 0;
+      if (elapsedSeconds <= edithFadeInSeconds) {
+        volume = (elapsedSeconds / edithFadeInSeconds) * edithMaxVolume;
+      } else if (elapsedSeconds <= edithFadeInSeconds + edithHoldSeconds) {
+        volume = edithMaxVolume;
+      } else if (elapsedSeconds <= edithTotalSeconds) {
+        const fadeOutElapsed = elapsedSeconds - edithFadeInSeconds - edithHoldSeconds;
+        volume = (1 - (fadeOutElapsed / edithFadeOutSeconds)) * edithMaxVolume;
+      }
+      edithAudio.volume = Math.max(0, Math.min(edithMaxVolume, volume));
+    }
+
+    function startEdithPitchWarning() {
+      stopEdithWarning();
+      edithAudio.currentTime = 0;
+      edithAudio.volume = 0;
+
+      const startedAtMs = Date.now();
+      const tick = () => {
+        const elapsedSeconds = (Date.now() - startedAtMs) / 1000;
+        if (elapsedSeconds >= edithTotalSeconds) {
+          stopEdithWarning();
+          return;
+        }
+        applyEdithVolumeEnvelope(elapsedSeconds);
+      };
+
+      tick();
+      edithVolumeIntervalId = window.setInterval(tick, 100);
+      edithStopTimeoutId = window.setTimeout(() => {
+        stopEdithWarning();
+      }, (edithTotalSeconds * 1000) + 150);
+
+      const playAttempt = edithAudio.play();
+      if (playAttempt && typeof playAttempt.catch === 'function') {
+        playAttempt.catch(() => {});
+      }
+    }
+
+    function resizeConfettiCanvas() {
+      if (!confettiEnabled) {
+        return;
+      }
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+
+    function randomBetween(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function createConfettiPiece(spawnTopOnly = false) {
+      const width = confettiCanvas.width || window.innerWidth || 1;
+      const height = confettiCanvas.height || window.innerHeight || 1;
+      return {
+        x: randomBetween(0, width),
+        y: spawnTopOnly ? randomBetween(-height * 0.2, 0) : randomBetween(-height, height * 0.2),
+        w: randomBetween(5, 10),
+        h: randomBetween(8, 16),
+        vx: randomBetween(-45, 45),
+        vy: randomBetween(90, 210),
+        rotation: randomBetween(0, Math.PI * 2),
+        vr: randomBetween(-5, 5),
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+      };
+    }
+
+    function drawConfettiPiece(piece) {
+      if (!confettiEnabled) {
+        return;
+      }
+      confettiCtx.save();
+      confettiCtx.translate(piece.x, piece.y);
+      confettiCtx.rotate(piece.rotation);
+      confettiCtx.fillStyle = piece.color;
+      confettiCtx.fillRect(-piece.w / 2, -piece.h / 2, piece.w, piece.h);
+      confettiCtx.restore();
+    }
+
+    function stopConfetti() {
+      if (!confettiEnabled) {
+        return;
+      }
+      if (confettiFrameId !== null) {
+        window.cancelAnimationFrame(confettiFrameId);
+        confettiFrameId = null;
+      }
+      confettiPieces = [];
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confettiCanvas.classList.add('hidden');
+    }
+
+    function animateConfetti(nowMs) {
+      if (!confettiEnabled) {
+        return;
+      }
+      const now = Number(nowMs || 0);
+      const deltaSeconds = confettiLastMs ? Math.min(0.05, (now - confettiLastMs) / 1000) : 0.016;
+      confettiLastMs = now;
+
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confettiSpawnBudget += deltaSeconds * 35;
+      while (confettiSpawnBudget >= 1) {
+        confettiPieces.push(createConfettiPiece(true));
+        confettiSpawnBudget -= 1;
+      }
+
+      const heightLimit = confettiCanvas.height + 30;
+      const widthLimit = confettiCanvas.width + 30;
+
+      confettiPieces = confettiPieces.filter((piece) => {
+        piece.x += piece.vx * deltaSeconds;
+        piece.y += piece.vy * deltaSeconds;
+        piece.rotation += piece.vr * deltaSeconds;
+        drawConfettiPiece(piece);
+        return piece.y < heightLimit && piece.x > -30 && piece.x < widthLimit;
+      });
+
+      confettiFrameId = window.requestAnimationFrame(animateConfetti);
+    }
+
+    function startConfetti() {
+      if (!confettiEnabled) {
+        return;
+      }
+      if (confettiFrameId !== null) {
+        return;
+      }
+      resizeConfettiCanvas();
+      confettiCanvas.classList.remove('hidden');
+      confettiPieces = [];
+      for (let i = 0; i < 180; i += 1) {
+        confettiPieces.push(createConfettiPiece(false));
+      }
+      confettiLastMs = 0;
+      confettiSpawnBudget = 0;
+      confettiFrameId = window.requestAnimationFrame(animateConfetti);
+    }
+
+    function renderRoster(assignments) {
+      const tbody = document.getElementById('rosterBody');
+      tbody.innerHTML = '';
+      for (const row of assignments) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${row.name}</td><td>${row.group_number}</td><td>${row.sector_name}</td>`;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function renderUpcomingSections(state) {
+      const upcomingNode = document.getElementById('upcomingSections');
+      upcomingNode.innerHTML = '';
+
+      const sections = Array.isArray(state.sections) ? state.sections : [];
+      const currentOrder = state.current_section ? state.current_section.order : Number.POSITIVE_INFINITY;
+      const futureSections = sections.filter((section) => section.order > currentOrder);
+
+      if (!futureSections.length) {
+        const empty = document.createElement('p');
+        empty.className = 'muted';
+        empty.textContent = 'No further sections.';
+        upcomingNode.appendChild(empty);
+        return;
+      }
+
+      for (const section of futureSections) {
+        const card = document.createElement('div');
+        card.className = 'upcoming-card';
+
+        const title = document.createElement('p');
+        title.className = 'upcoming-card-title';
+        title.textContent = `${section.order}. ${section.title}`;
+
+        const meta = document.createElement('p');
+        meta.className = 'upcoming-card-meta';
+        meta.textContent = `Duration: ${formatDurationLabel(section.duration_seconds)}`;
+
+        card.appendChild(title);
+        card.appendChild(meta);
+        upcomingNode.appendChild(card);
+      }
+    }
+
+    function renderPitchRound(state) {
+      const panel = document.getElementById('pitchRoundPanel');
+      const label = document.getElementById('pitchRoundLabel');
+      const timer = document.getElementById('pitchRoundTimer');
+      const hint = document.getElementById('pitchRoundHint');
+      const bar = document.getElementById('pitchRoundBar');
+      const sectorNow = document.getElementById('pitchSectorNow');
+      const order = document.getElementById('pitchOrder');
+
+      const pitchState = computePitchRoundState(state);
+      if (!pitchState) {
+        panel.classList.add('hidden');
+        return;
+      }
+
+      panel.classList.remove('hidden');
+      timer.classList.remove('danger');
+      bar.classList.remove('gap');
+      bar.classList.remove('danger');
+      order.textContent = pitchRunningOrderText(state, pitchState.groupCount);
+
+      if (pitchState.mode === 'pitch') {
+        label.textContent = `Group ${pitchState.group} of ${pitchState.groupCount} pitching`;
+        timer.textContent = formatSeconds(pitchState.remaining);
+        sectorNow.textContent = `Now pitching: ${sectorForGroup(state, pitchState.group)}`;
+        hint.textContent = '1-minute pitch in progress.';
+        if (pitchState.remaining <= 20) {
+          timer.classList.add('danger');
+          bar.classList.add('danger');
+          hint.textContent = 'Final 20 seconds.';
+        }
+      } else if (pitchState.mode === 'gap') {
+        label.textContent = `Changeover before Group ${pitchState.nextGroup}`;
+        timer.textContent = formatSeconds(pitchState.remaining);
+        sectorNow.textContent = `Up next: ${sectorForGroup(state, pitchState.nextGroup)}`;
+        hint.textContent = '10-second transition.';
+        bar.classList.add('gap');
+      } else {
+        label.textContent = `Pitch round complete`;
+        timer.textContent = '00:00';
+        sectorNow.textContent = 'Pitching finished for this round.';
+        hint.textContent = 'Waiting for the next workshop section.';
+      }
+
+      bar.style.width = `${pitchState.progressPercent}%`;
+    }
+
+    function renderAwardResults(state) {
+      const panel = document.getElementById('awardResultsPanel');
+      const summary = document.getElementById('awardSummary');
+      const winner = document.getElementById('awardWinner');
+      const list = document.getElementById('awardResultsList');
+
+      if (!isAwardSection(state)) {
+        panel.classList.add('hidden');
+        return;
+      }
+
+      panel.classList.remove('hidden');
+      list.innerHTML = '';
+
+      const voteResults = state.vote_results || {};
+      const totalVotes = Number(voteResults.total_votes || 0);
+      const ranked = Array.isArray(voteResults.ranked) ? voteResults.ranked : [];
+      const nonZeroRanked = ranked.filter((row) => Number(row.votes || 0) > 0);
+
+      summary.textContent = `${totalVotes} vote(s) submitted.`;
+
+      if (totalVotes <= 0) {
+        winner.textContent = 'No votes submitted yet.';
+        const item = document.createElement('li');
+        item.textContent = 'Waiting for student votes...';
+        list.appendChild(item);
+        return;
+      }
+
+      if (voteResults.tie) {
+        const leaders = Array.isArray(voteResults.leaders) ? voteResults.leaders : [];
+        winner.textContent = `Tie at ${voteResults.top_votes} vote(s): ${leaders.join(', ')}`;
+      } else {
+        winner.textContent = `Winner: ${voteResults.winner_sector} (${voteResults.top_votes} vote(s))`;
+      }
+
+      const rowsToShow = nonZeroRanked.length ? nonZeroRanked : ranked;
+      for (const row of rowsToShow) {
+        const item = document.createElement('li');
+        item.textContent = `${row.sector_name}: ${row.votes} vote(s)`;
+        list.appendChild(item);
+      }
+    }
+
+    function render(state) {
+      document.getElementById('joinedCount').textContent = state.joined_count;
+      document.getElementById('joinStatus').textContent = state.join_open ? 'Open' : 'Closed';
+      document.getElementById('joinHint').textContent = state.join_open
+        ? 'Students can scan now.'
+        : 'Turn Join on to allow student sign-in.';
+      document.getElementById('joinQrWrap').classList.toggle('hidden', !state.join_open);
+      const showVoteQr = isSectionNine(state);
+      document.getElementById('joinQrPanel').classList.toggle('hidden', showVoteQr);
+      document.getElementById('voteQrPanel').classList.toggle('hidden', !showVoteQr);
+      document.getElementById('timerStatus').textContent = state.timer_status;
+      document.getElementById('timerText').textContent = formatSeconds(state.remaining_seconds);
+
+      const allocationPanel = document.getElementById('allocationPanel');
+      const timedPanel = document.getElementById('timedPanel');
+      const completedPanel = document.getElementById('completedPanel');
+
+      allocationPanel.classList.toggle('hidden', state.phase !== 'allocation');
+      timedPanel.classList.toggle('hidden', state.phase !== 'timed');
+      completedPanel.classList.toggle('hidden', state.phase !== 'completed');
+
+      if (state.current_section) {
+        document.getElementById('sectionTitle').textContent = state.current_section.title;
+        document.getElementById('sectionDescription').textContent = state.current_section.description || '';
+      }
+      renderPrePitchWarning(state);
+      renderPitchRound(state);
+      renderAwardResults(state);
+      renderUpcomingSections(state);
+
+      document.getElementById('unlockPanel').classList.toggle('hidden', state.facilitator_unlocked);
+      document.getElementById('controlPanel').classList.toggle('hidden', !state.facilitator_unlocked);
+
+      const startPauseBtn = document.getElementById('startPauseBtn');
+      startPauseBtn.textContent = state.timer_status === 'running' ? 'Pause' : 'Start';
+      document.getElementById('toggleJoinBtn').textContent = state.join_open ? 'Join: On' : 'Join: Off';
+      document.getElementById('beepBtn').textContent = `Beep: ${state.beep_enabled ? 'On' : 'Off'}`;
+
+      renderRoster(state.assignments);
+
+      const isPitchSection = isPitchRoundSection(state);
+      const pitchState = computePitchRoundState(state);
+      const sectionDuration = Number(state.current_section?.duration_seconds || 0);
+      const remaining = Number(state.remaining_seconds || 0);
+      const currentId = state.current_section ? state.current_section.id : null;
+      const sectionChanged = currentId !== previousTimedSectionId;
+
+      if (hasRendered && sectionChanged) {
+        warnedTwoMinuteSectionId = null;
+        edithTriggeredPitchKeys = new Set();
+        stopEdithWarning();
+      }
+
+      if (
+        hasRendered &&
+        state.phase === 'timed' &&
+        state.timer_status === 'running' &&
+        currentId !== null &&
+        isPitchSection &&
+        pitchState &&
+        pitchState.mode === 'pitch' &&
+        pitchState.remaining > 0 &&
+        pitchState.remaining <= 10
+      ) {
+        const pitchKey = `${currentId}:${pitchState.group}`;
+        if (!edithTriggeredPitchKeys.has(pitchKey)) {
+          startEdithPitchWarning();
+          edithTriggeredPitchKeys.add(pitchKey);
+        }
+      }
+
+      if (state.beep_enabled && hasRendered) {
+        if (
+          state.phase === 'timed' &&
+          currentId !== null &&
+          !isPitchSection &&
+          sectionDuration >= 120 &&
+          remaining > 0 &&
+          remaining <= 120 &&
+          warnedTwoMinuteSectionId !== currentId
+        ) {
+          playGong();
+          warnedTwoMinuteSectionId = currentId;
+        }
+
+        if (previousTimedSectionId !== null && sectionChanged) {
+          beep();
+        }
+        if (currentState && currentState.phase === 'timed' && state.phase === 'completed') {
+          beep();
+        }
+      }
+
+      if (isAwardSection(state)) {
+        startConfetti();
+      } else {
+        stopConfetti();
+      }
+
+      previousTimedSectionId = state.current_section ? state.current_section.id : null;
+      hasRendered = true;
+    }
+
+    async function postJson(url, payload = {}) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || 'Request failed');
+      }
+      return data;
+    }
+
+    async function runAction(action) {
+      try {
+        await action();
+        setStatus('Updated.');
+        await fetchState();
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    document.getElementById('unlockBtn').addEventListener('click', () => {
+      runAction(() => postJson('/api/pin/unlock', { pin: document.getElementById('pinInput').value }));
+    });
+
+    document.getElementById('startPauseBtn').addEventListener('click', () => {
+      if (currentState && currentState.timer_status === 'running') {
+        runAction(() => postJson('/api/control/pause'));
+      } else {
+        runAction(() => postJson('/api/control/start'));
+      }
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      runAction(() => postJson('/api/control/next'));
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      runAction(() => postJson('/api/control/back'));
+    });
+
+    document.getElementById('toggleJoinBtn').addEventListener('click', () => {
+      if (currentState && currentState.join_open) {
+        runAction(() => postJson('/api/join/close'));
+      } else {
+        runAction(() => postJson('/api/join/open'));
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      const confirmed = window.confirm('Reset run and clear assignments?');
+      if (!confirmed) {
+        return;
+      }
+      runAction(() => postJson('/api/run/reset'));
+    });
+
+    document.getElementById('populateAsimovBtn').addEventListener('click', () => {
+      const confirmed = window.confirm('Replace current roster with 7 groups of 4 Isaac Asimov characters?');
+      if (!confirmed) {
+        return;
+      }
+      runAction(() => postJson('/api/test/populate-asimov'));
+    });
+
+    document.getElementById('beepBtn').addEventListener('click', () => {
+      runAction(() => postJson('/api/beep/toggle'));
+    });
+
+    document.getElementById('alarmBtn').addEventListener('click', () => {
+      try {
+        playGong();
+        setStatus('Gong played.');
+      } catch (err) {
+        setStatus('Unable to play gong.', true);
+      }
+    });
+
+    document.getElementById('edithBtn').addEventListener('click', () => {
+      try {
+        startEdithPitchWarning();
+        setStatus('Edith cue played.');
+      } catch (err) {
+        setStatus('Unable to play Edith cue.', true);
+      }
+    });
+
+    document.getElementById('csvBtn').addEventListener('click', () => {
+      window.location.href = '/api/assignments.csv';
+    });
+
+    window.addEventListener('resize', resizeConfettiCanvas);
+    resizeConfettiCanvas();
+
+    fetchState().catch((err) => setStatus(err.message, true));
+    setInterval(() => fetchState().catch((err) => setStatus(err.message, true)), 1000);
+  </script>
+</body>
+</html>

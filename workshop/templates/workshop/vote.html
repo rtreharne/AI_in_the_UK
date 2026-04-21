@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vote For Best AI Solution</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+      background: linear-gradient(160deg, #f6f8fc, #eef7ff);
+      color: #1f2a44;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .card {
+      width: min(560px, 100%);
+      background: #fff;
+      border: 1px solid #d4deed;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 8px 28px rgba(22, 32, 62, 0.09);
+    }
+    h1 {
+      margin-top: 0;
+    }
+    .warning {
+      margin: 10px 0 16px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #f3b788;
+      background: #fff3e8;
+      color: #8a3200;
+      font-weight: 700;
+    }
+    .muted {
+      color: #5b6474;
+      font-size: 0.93rem;
+    }
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #c4d0e4;
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 1rem;
+      margin-top: 8px;
+      background: #fff;
+    }
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #c4d0e4;
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 1rem;
+      margin-top: 8px;
+      background: #fff;
+      resize: vertical;
+      min-height: 92px;
+    }
+    .rating-wrap {
+      margin-top: 14px;
+      border: 1px solid #d4deed;
+      border-radius: 10px;
+      padding: 10px;
+      background: #f8fbff;
+    }
+    .rating-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .rating-option {
+      border: 1px solid #c4d0e4;
+      border-radius: 10px;
+      padding: 8px 6px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      background: #fff;
+    }
+    .rating-option input {
+      display: none;
+    }
+    .rating-option.selected {
+      border-color: #0f766e;
+      background: #e8f8f5;
+    }
+    .rating-emoji {
+      font-size: 1.4rem;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .rating-label {
+      font-size: 0.8rem;
+      color: #334155;
+      font-weight: 700;
+    }
+    .char-count {
+      margin-top: 5px;
+      text-align: right;
+      font-size: 0.84rem;
+      color: #64748b;
+    }
+    button {
+      margin-top: 14px;
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      background: #0f766e;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .status {
+      margin-top: 12px;
+      font-size: 0.95rem;
+      min-height: 1.2em;
+      color: #1f4f7a;
+    }
+    .error {
+      color: #b91c1c;
+      margin-top: 10px;
+      min-height: 1.2em;
+    }
+    .success {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #e6faf5;
+      border: 1px solid #b5eadb;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Vote For Your Favourite AI Solution</h1>
+    <p class="muted">Choose the sector whose AI solution you think was strongest.</p>
+    <p class="warning">Do not vote for your own sector.</p>
+
+    <form id="voteForm">
+      <label for="sectorSelect">Sector</label>
+      <select id="sectorSelect" required>
+        <option value="">Select a sector...</option>
+        {% for sector in sectors %}
+        <option value="{{ sector }}">{{ sector }}</option>
+        {% endfor %}
+      </select>
+
+      <div class="rating-wrap">
+        <label>How did you feel about this session? (1-5)</label>
+        <div class="rating-row" role="radiogroup" aria-label="Session rating">
+          <label class="rating-option" data-rating-option>
+            <input type="radio" name="sessionRating" value="1" required>
+            <div class="rating-emoji">😡</div>
+            <div class="rating-label">1 Angry</div>
+          </label>
+          <label class="rating-option" data-rating-option>
+            <input type="radio" name="sessionRating" value="2" required>
+            <div class="rating-emoji">🙁</div>
+            <div class="rating-label">2 Unhappy</div>
+          </label>
+          <label class="rating-option" data-rating-option>
+            <input type="radio" name="sessionRating" value="3" required>
+            <div class="rating-emoji">😐</div>
+            <div class="rating-label">3 Neutral</div>
+          </label>
+          <label class="rating-option" data-rating-option>
+            <input type="radio" name="sessionRating" value="4" required>
+            <div class="rating-emoji">🙂</div>
+            <div class="rating-label">4 Happy</div>
+          </label>
+          <label class="rating-option" data-rating-option>
+            <input type="radio" name="sessionRating" value="5" required>
+            <div class="rating-emoji">😄</div>
+            <div class="rating-label">5 Super Happy</div>
+          </label>
+        </div>
+      </div>
+
+      <label for="feedbackInput" style="display:block; margin-top:14px">Direct feedback (max 200 chars)</label>
+      <textarea id="feedbackInput" maxlength="200" required placeholder="What did you think of the session?"></textarea>
+      <div id="feedbackCount" class="char-count">0/200</div>
+      <button id="submitBtn" type="submit">Submit Vote</button>
+    </form>
+
+    <p id="voteStatus" class="status">Checking voting status...</p>
+    <p id="errorText" class="error"></p>
+    <div id="successBox" class="success">Vote submitted. Thank you.</div>
+  </main>
+
+  <script>
+    let voteOpen = false;
+
+    async function refreshVoteStatus() {
+      try {
+        const res = await fetch('/api/state');
+        if (!res.ok) {
+          throw new Error('Unable to read workshop state.');
+        }
+        const state = await res.json();
+        voteOpen = Boolean(state.vote_open);
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = !voteOpen;
+        document.getElementById('voteStatus').textContent = voteOpen
+          ? 'Voting is open now.'
+          : 'Voting is currently closed. Please wait for the Vote and Feedback section.';
+      } catch (err) {
+        voteOpen = false;
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('voteStatus').textContent = 'Unable to load vote status right now.';
+      }
+    }
+
+    function updateRatingSelectionStyles() {
+      for (const option of document.querySelectorAll('[data-rating-option]')) {
+        const input = option.querySelector('input[type="radio"]');
+        option.classList.toggle('selected', Boolean(input && input.checked));
+      }
+    }
+
+    function updateFeedbackCount() {
+      const text = document.getElementById('feedbackInput').value || '';
+      document.getElementById('feedbackCount').textContent = `${text.length}/200`;
+    }
+
+    async function submitVote(sectorName, sessionRating, feedbackText) {
+      const res = await fetch('/api/vote/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sector_name: sectorName,
+          session_rating: sessionRating,
+          feedback_text: feedbackText,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || 'Unable to submit vote right now.');
+      }
+      return data;
+    }
+
+    document.getElementById('voteForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      document.getElementById('errorText').textContent = '';
+      document.getElementById('successBox').style.display = 'none';
+
+      if (!voteOpen) {
+        document.getElementById('errorText').textContent = 'Voting is not open yet.';
+        return;
+      }
+
+      const sector = document.getElementById('sectorSelect').value;
+      if (!sector) {
+        document.getElementById('errorText').textContent = 'Please choose a sector.';
+        return;
+      }
+      const selectedRating = document.querySelector('input[name="sessionRating"]:checked');
+      if (!selectedRating) {
+        document.getElementById('errorText').textContent = 'Please add a rating from 1 to 5.';
+        return;
+      }
+      const feedbackText = document.getElementById('feedbackInput').value.trim();
+      if (!feedbackText) {
+        document.getElementById('errorText').textContent = 'Please add your feedback.';
+        return;
+      }
+
+      try {
+        await submitVote(sector, Number(selectedRating.value), feedbackText);
+        document.getElementById('successBox').style.display = 'block';
+      } catch (err) {
+        document.getElementById('errorText').textContent = err.message;
+      }
+    });
+
+    for (const ratingInput of document.querySelectorAll('input[name="sessionRating"]')) {
+      ratingInput.addEventListener('change', updateRatingSelectionStyles);
+    }
+    document.getElementById('feedbackInput').addEventListener('input', updateFeedbackCount);
+
+    refreshVoteStatus();
+    updateRatingSelectionStyles();
+    updateFeedbackCount();
+    setInterval(refreshVoteStatus, 3000);
+  </script>
+</body>
+</html>

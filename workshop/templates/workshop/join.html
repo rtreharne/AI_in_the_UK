@@ -1,0 +1,144 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Join Workshop</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+      background: linear-gradient(160deg, #e9f4ff, #f8fafc);
+      color: #1f2a44;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .card {
+      width: min(540px, 100%);
+      background: #fff;
+      border: 1px solid #d4deed;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 8px 28px rgba(22, 32, 62, 0.09);
+    }
+    h1 {
+      margin-top: 0;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #c4d0e4;
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+    button {
+      margin-top: 12px;
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      background: #0f766e;
+      cursor: pointer;
+    }
+    .muted {
+      color: #5b6474;
+      font-size: 0.93rem;
+    }
+    .result {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #e6faf5;
+      border: 1px solid #b5eadb;
+      display: none;
+    }
+    .error {
+      color: #b91c1c;
+      margin-top: 12px;
+      min-height: 1.2em;
+    }
+    .status {
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Join Your Group</h1>
+    <p class="muted">Enter your name to get assigned a group and sector.</p>
+
+    <form id="joinForm">
+      <label for="nameInput">Your name</label>
+      <input id="nameInput" name="name" maxlength="120" required placeholder="e.g., Alex Morgan" />
+      <button type="submit">Group Me</button>
+    </form>
+
+    <p id="joinStatus" class="status"></p>
+    <p id="errorText" class="error"></p>
+
+    <div id="result" class="result">
+      <h2 id="resultHeading"></h2>
+      <p>Find your table now and wait for your introduction to this session.</p>
+    </div>
+  </main>
+
+  <script>
+    async function refreshJoinStatus() {
+      try {
+        const res = await fetch('/api/state');
+        if (!res.ok) {
+          return;
+        }
+        const state = await res.json();
+        document.getElementById('joinStatus').textContent = state.join_open
+          ? 'Join is open.'
+          : 'Join is currently closed. Ask the facilitator to open join.';
+      } catch (err) {
+        document.getElementById('joinStatus').textContent = 'Unable to load join status right now.';
+      }
+    }
+
+    async function claimAssignment(name) {
+      const res = await fetch('/api/assignment/claim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Unable to assign right now.');
+      }
+      return data;
+    }
+
+    document.getElementById('joinForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      document.getElementById('errorText').textContent = '';
+
+      const name = document.getElementById('nameInput').value;
+      try {
+        const payload = await claimAssignment(name);
+        const assignment = payload.assignment;
+        document.getElementById('resultHeading').textContent =
+          `Congratulations you are in the ${assignment.sector_name} Sector group.`;
+        document.getElementById('result').style.display = 'block';
+      } catch (err) {
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('errorText').textContent = err.message;
+      }
+    });
+
+    refreshJoinStatus();
+    setInterval(refreshJoinStatus, 5000);
+  </script>
+</body>
+</html>
