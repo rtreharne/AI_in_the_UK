@@ -203,6 +203,16 @@ class ApiBehaviorTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response['Content-Type'].startswith('audio/mpeg'))
 
+    def test_drumroll_audio_endpoint_available(self):
+        response = self.client.get('/api/sounds/drumroll.mp3')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response['Content-Type'].startswith('audio/mpeg'))
+
+    def test_kool_audio_endpoint_available(self):
+        response = self.client.get('/api/sounds/kool.mp3')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response['Content-Type'].startswith('audio/mpeg'))
+
     def test_vote_page_available(self):
         response = self.client.get('/vote')
         self.assertEqual(response.status_code, 200)

@@ -248,6 +248,24 @@ def api_sound_edith(request: HttpRequest) -> HttpResponse:
     return FileResponse(edith_path.open('rb'), content_type='audio/mpeg')
 
 
+@require_GET
+def api_sound_drumroll(request: HttpRequest) -> HttpResponse:
+    drumroll_path = Path(settings.BASE_DIR) / 'drumroll.mp3'
+    if not drumroll_path.exists():
+        raise Http404('Drumroll audio file not found.')
+
+    return FileResponse(drumroll_path.open('rb'), content_type='audio/mpeg')
+
+
+@require_GET
+def api_sound_kool(request: HttpRequest) -> HttpResponse:
+    kool_path = Path(settings.BASE_DIR) / 'kool.mp3'
+    if not kool_path.exists():
+        raise Http404('Kool audio file not found.')
+
+    return FileResponse(kool_path.open('rb'), content_type='audio/mpeg')
+
+
 @csrf_exempt
 @require_POST
 def api_vote_submit(request: HttpRequest) -> JsonResponse:
