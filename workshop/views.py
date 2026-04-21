@@ -4,8 +4,10 @@ import csv
 import io
 import json
 import os
+import re
 from pathlib import Path
 from datetime import timedelta
+from html import escape
 
 import qrcode
 from django.conf import settings
@@ -64,6 +66,9 @@ ASIMOV_TEST_NAMES = [
     'Raych Seldon',
     'Chetter Hummin',
 ]
+MARKDOWN_HEADING_PATTERN = re.compile(r'^(#{1,6})\s+(.+)$')
+MARKDOWN_UL_PATTERN = re.compile(r'^\s*[-*+]\s+(.+)$')
+MARKDOWN_OL_PATTERN = re.compile(r'^\s*\d+\.\s+(.+)$')
 
 
 def _control_pin() -> str:
@@ -202,6 +207,182 @@ def _make_qr_svg(data: str) -> str:
     return stream.getvalue().decode('utf-8')
 
 
+def _inline_markdown_to_pdf_markup(text: str) -> str:
+    safe = escape(text.strip())
+    if not safe:
+        return ''
+    safe = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'\1 (\2)', safe)
+    safe = re.sub(r'`([^`]+)`', r'<font name="Courier">\1</font>', safe)
+    safe = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', safe)
+    safe = re.sub(r'__(.+?)__', r'<b>\1</b>', safe)
+    safe = re.sub(r'\*(.+?)\*', r'<i>\1</i>', safe)
+    safe = re.sub(r'_(.+?)_', r'<i>\1</i>', safe)
+    return safe
+
+
+def _build_intro_pdf(title: str, markdown_text: str) -> bytes:
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+    from reportlab.lib.units import mm
+    from reportlab.platypus import ListFlowable, ListItem, Paragraph, SimpleDocTemplate, Spacer
+
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        name='WorkshopPdfTitle',
+        parent=styles['Title'],
+        fontName='Helvetica-Bold',
+        fontSize=19,
+        leading=24,
+        spaceAfter=8,
+    )
+    heading_style_h1 = ParagraphStyle(
+        name='WorkshopPdfH1',
+        parent=styles['Heading1'],
+        fontName='Helvetica-Bold',
+        fontSize=15,
+        leading=19,
+        spaceBefore=8,
+        spaceAfter=5,
+    )
+    heading_style_h2 = ParagraphStyle(
+        name='WorkshopPdfH2',
+        parent=styles['Heading2'],
+        fontName='Helvetica-Bold',
+        fontSize=13,
+        leading=17,
+        spaceBefore=7,
+        spaceAfter=4,
+    )
+    heading_style_h3 = ParagraphStyle(
+        name='WorkshopPdfH3',
+        parent=styles['Heading3'],
+        fontName='Helvetica-Bold',
+        fontSize=11.5,
+        leading=15,
+        spaceBefore=6,
+        spaceAfter=3,
+    )
+    body_style = ParagraphStyle(
+        name='WorkshopPdfBody',
+        parent=styles['BodyText'],
+        fontName='Helvetica',
+        fontSize=10.8,
+        leading=15,
+        spaceAfter=6,
+    )
+    footer_hint_style = ParagraphStyle(
+        name='WorkshopPdfHint',
+        parent=styles['BodyText'],
+        fontName='Helvetica-Oblique',
+        fontSize=9,
+        leading=12,
+        textColor='#555555',
+        spaceAfter=6,
+    )
+
+    heading_styles = {
+        1: heading_style_h1,
+        2: heading_style_h2,
+        3: heading_style_h3,
+        4: heading_style_h3,
+        5: heading_style_h3,
+        6: heading_style_h3,
+    }
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        leftMargin=16 * mm,
+        rightMargin=16 * mm,
+        topMargin=14 * mm,
+        bottomMargin=14 * mm,
+        title=title or 'Introduction',
+    )
+
+    story = [
+        Paragraph(_inline_markdown_to_pdf_markup(title or 'Introduction'), title_style),
+        Paragraph('Print handout', footer_hint_style),
+        Spacer(1, 2),
+    ]
+
+    paragraph_lines: list[str] = []
+    list_mode: str | None = None
+    list_items = []
+
+    def flush_paragraph():
+        nonlocal paragraph_lines
+        if not paragraph_lines:
+            return
+        line_markup = [_inline_markdown_to_pdf_markup(line) for line in paragraph_lines if line.strip()]
+        markup = ' '.join(segment for segment in line_markup if segment)
+        if markup:
+            story.append(Paragraph(markup, body_style))
+        paragraph_lines = []
+
+    def flush_list():
+        nonlocal list_mode, list_items
+        if list_items:
+            story.append(
+                ListFlowable(
+                    list_items,
+                    bulletType='bullet' if list_mode == 'ul' else '1',
+                    leftIndent=14,
+                    bulletFontName='Helvetica-Bold',
+                )
+            )
+            story.append(Spacer(1, 3))
+        list_mode = None
+        list_items = []
+
+    for raw_line in str(markdown_text or '').replace('\r\n', '\n').replace('\r', '\n').split('\n'):
+        line = raw_line.rstrip()
+        stripped = line.strip()
+
+        if not stripped:
+            flush_paragraph()
+            flush_list()
+            continue
+
+        heading_match = MARKDOWN_HEADING_PATTERN.match(stripped)
+        if heading_match:
+            flush_paragraph()
+            flush_list()
+            level = min(len(heading_match.group(1)), 6)
+            story.append(Paragraph(_inline_markdown_to_pdf_markup(heading_match.group(2)), heading_styles[level]))
+            continue
+
+        unordered_match = MARKDOWN_UL_PATTERN.match(line)
+        if unordered_match:
+            flush_paragraph()
+            if list_mode != 'ul':
+                flush_list()
+                list_mode = 'ul'
+            list_items.append(ListItem(Paragraph(_inline_markdown_to_pdf_markup(unordered_match.group(1)), body_style)))
+            continue
+
+        ordered_match = MARKDOWN_OL_PATTERN.match(line)
+        if ordered_match:
+            flush_paragraph()
+            if list_mode != 'ol':
+                flush_list()
+                list_mode = 'ol'
+            list_items.append(ListItem(Paragraph(_inline_markdown_to_pdf_markup(ordered_match.group(1)), body_style)))
+            continue
+
+        flush_list()
+        paragraph_lines.append(stripped)
+
+    flush_paragraph()
+    flush_list()
+
+    if len(story) <= 3:
+        story.append(Paragraph('No introduction content is currently available.', body_style))
+
+    doc.build(story)
+    return buffer.getvalue()
+
+
 @require_GET
 def display_page(request: HttpRequest) -> HttpResponse:
     join_url = request.build_absolute_uri(reverse('join_page'))
@@ -213,6 +394,31 @@ def display_page(request: HttpRequest) -> HttpResponse:
         'vote_qr_svg': _make_qr_svg(vote_url),
     }
     return render(request, 'workshop/display.html', context)
+
+
+@require_GET
+def api_intro_pdf(request: HttpRequest) -> HttpResponse:
+    section = WorkshopSection.objects.filter(enabled=True, order=1).first()
+    if section is None:
+        section = (
+            WorkshopSection.objects.filter(enabled=True, title__icontains='introduction')
+            .order_by('order', 'id')
+            .first()
+        )
+    if section is None:
+        raise Http404('Introduction section not found.')
+
+    try:
+        pdf_bytes = _build_intro_pdf(section.title, section.description or '')
+    except ImportError:
+        return JsonResponse(
+            {'error': 'PDF support is not installed. Rebuild the app after installing requirements.'},
+            status=500,
+        )
+
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="introduction_handout.pdf"'
+    return response
 
 
 @require_GET

@@ -6,8 +6,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-only-secret-key-change-me')
 DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
-allowed_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '*')
-ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(',') if host.strip()]
+DEFAULT_ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'aiintheuk.uniwebdev.co.uk',
+]
+allowed_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
+ALLOWED_HOSTS = [
+    host.strip() for host in allowed_hosts.split(',') if host.strip()
+] or DEFAULT_ALLOWED_HOSTS
+
+DEFAULT_CSRF_TRUSTED_ORIGINS = [
+    'https://aiintheuk.uniwebdev.co.uk',
+]
+csrf_trusted_origins = os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '')
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip() for origin in csrf_trusted_origins.split(',') if origin.strip()
+] or DEFAULT_CSRF_TRUSTED_ORIGINS
 
 INSTALLED_APPS = [
     'django.contrib.admin',

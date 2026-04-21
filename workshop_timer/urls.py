@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.display_page, name='display_page'),
     path('join', views.join_page, name='join_page'),
     path('vote', views.vote_page, name='vote_page'),
+    path('api/introduction.pdf', views.api_intro_pdf, name='api_intro_pdf'),
     path('api/state', views.api_state, name='api_state'),
     path('api/sounds/gong.mp3', views.api_sound_gong, name='api_sound_gong'),
     path('api/sounds/edith.mp3', views.api_sound_edith, name='api_sound_edith'),

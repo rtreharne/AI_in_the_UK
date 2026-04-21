@@ -262,6 +262,12 @@
       font-size: 0.95rem;
       padding: 9px 12px;
     }
+    .intro-actions {
+      margin: 8px 0 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     .award-results-panel {
       margin-top: 14px;
       padding: 14px;
@@ -545,28 +551,44 @@
       text-underline-offset: 2px;
     }
     .allocation-instructions {
-      border: 4px solid #111111;
+      border: 3px solid #111111;
       border-radius: 2px;
-      background: repeating-linear-gradient(-8deg, #c2185b 0 26px, #f0e300 26px 52px);
+      background: #ffffff;
       box-shadow: 8px 8px 0 #111111;
+      padding: 16px;
       animation: none;
     }
     .allocation-banner {
-      color: #111111;
-      text-shadow: 2px 2px 0 #f2e919;
+      display: inline-block;
+      margin: 0 0 10px;
+      padding: 0.16em 0.38em;
+      background: #111111;
+      color: #f0e300;
+      box-shadow: 4px 4px 0 #c2185b;
+      transform: rotate(-1.1deg);
+      text-shadow: none;
     }
     .allocation-subtitle {
+      margin: 0 0 12px;
       color: #111111;
-      background: rgba(255, 255, 255, 0.84);
+      background: #f0e300;
       border: 2px solid #111111;
-      padding: 6px 8px;
+      box-shadow: 3px 3px 0 #0e9fbb;
+      padding: 7px 10px;
       display: inline-block;
+      max-width: 46ch;
     }
     .allocation-steps {
+      margin: 0;
       color: #111111;
-      background: rgba(255, 255, 255, 0.9);
+      background: #ffffff;
       border: 2px solid #111111;
-      padding: 8px 10px 8px 28px;
+      box-shadow: 3px 3px 0 #111111;
+      padding: 10px 12px 10px 30px;
+    }
+    .allocation-steps li::marker {
+      color: #c2185b;
+      font-weight: 900;
     }
     .upcoming-card {
       background: #ffffff;
@@ -675,6 +697,9 @@
         <div id="timedPanel" class="hidden">
           <h2 id="sectionTitle">Section title</h2>
           <div id="sectionDescription" class="muted"></div>
+          <div id="introPdfActions" class="intro-actions hidden">
+            <button id="printIntroPdfBtn" class="secondary">Print Introduction PDF</button>
+          </div>
           <div id="countdownPanel">
             <div class="timer" id="timerText">00:00</div>
             <p class="muted">Status: <span id="timerStatus">ready</span></p>
@@ -1682,6 +1707,8 @@
       document.getElementById('voteQrPanel').classList.toggle('hidden', !showVoteQr);
       document.getElementById('timerStatus').textContent = state.timer_status;
       document.getElementById('timerText').textContent = formatSeconds(state.remaining_seconds);
+      const showIntroPdfActions = state.phase === 'timed' && Number(state.current_section?.order || 0) === 1;
+      document.getElementById('introPdfActions').classList.toggle('hidden', !showIntroPdfActions);
       const hideMainCountdown = state.phase === 'timed' && (
         Number(state.current_section?.order || 0) === 1 || isPitchRoundSection(state)
       );
@@ -1832,6 +1859,10 @@
 
     document.getElementById('backBtn').addEventListener('click', () => {
       runAction(() => postJson('/api/control/back'));
+    });
+
+    document.getElementById('printIntroPdfBtn').addEventListener('click', () => {
+      window.open('/api/introduction.pdf', '_blank', 'noopener');
     });
 
     document.getElementById('toggleJoinBtn').addEventListener('click', () => {
