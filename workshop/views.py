@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 import csv
+import ipaddress
 import io
 import json
 import os
@@ -8,6 +9,7 @@ import re
 from pathlib import Path
 from datetime import timedelta
 from html import escape
+from urllib.parse import urlsplit, urlunsplit
 
 import qrcode
 from django.conf import settings
@@ -90,6 +92,43 @@ def _is_facilitator(request: HttpRequest) -> bool:
 
 def _forbidden() -> JsonResponse:
     return JsonResponse({'error': 'Facilitator PIN unlock required.'}, status=403)
+
+
+def _confirm_control_pin(payload: dict) -> bool:
+    pin = str(payload.get('pin', '')).strip()
+    return pin == _control_pin()
+
+
+def _pin_required_error() -> JsonResponse:
+    return JsonResponse({'error': 'Correct PIN required for this action.'}, status=403)
+
+
+def _request_host_without_port(request: HttpRequest) -> str:
+    host = str(request.get_host() or '').strip()
+    if host.startswith('['):
+        end = host.find(']')
+        if end > 0:
+            return host[1:end]
+    return host.split(':', 1)[0].strip()
+
+
+def _is_local_host(host: str) -> bool:
+    value = str(host or '').strip().lower()
+    if value == 'localhost':
+        return True
+    try:
+        return ipaddress.ip_address(value).is_loopback
+    except ValueError:
+        return False
+
+
+def _absolute_workshop_url(request: HttpRequest, route_name: str) -> str:
+    raw_url = request.build_absolute_uri(reverse(route_name))
+    parts = urlsplit(raw_url)
+    desired_scheme = 'http' if _is_local_host(_request_host_without_port(request)) else 'https'
+    if parts.scheme == desired_scheme:
+        return raw_url
+    return urlunsplit((desired_scheme, parts.netloc, parts.path, parts.query, parts.fragment))
 
 
 def _section_title_matches(section: WorkshopSection | None, *keywords: str) -> bool:
@@ -179,8 +218,8 @@ def _state_payload(request: HttpRequest) -> dict:
         'vote_results': vote_results,
         'facilitator_unlocked': _is_facilitator(request),
         'server_time': timezone.now().isoformat(),
-        'join_url': request.build_absolute_uri(reverse('join_page')),
-        'vote_url': request.build_absolute_uri(reverse('vote_page')),
+        'join_url': _absolute_workshop_url(request, 'join_page'),
+        'vote_url': _absolute_workshop_url(request, 'vote_page'),
         'joined_count': len(assignments),
         'settings': {
             'predicted_class_size': settings.predicted_class_size,
@@ -385,8 +424,8 @@ def _build_intro_pdf(title: str, markdown_text: str) -> bytes:
 
 @require_GET
 def display_page(request: HttpRequest) -> HttpResponse:
-    join_url = request.build_absolute_uri(reverse('join_page'))
-    vote_url = request.build_absolute_uri(reverse('vote_page'))
+    join_url = _absolute_workshop_url(request, 'join_page')
+    vote_url = _absolute_workshop_url(request, 'vote_page')
     context = {
         'join_url': join_url,
         'join_qr_svg': _make_qr_svg(join_url),
@@ -640,6 +679,9 @@ def api_join_close(request: HttpRequest) -> JsonResponse:
 def api_run_reset(request: HttpRequest) -> JsonResponse:
     if not _is_facilitator(request):
         return _forbidden()
+    payload = _json_body(request)
+    if not _confirm_control_pin(payload):
+        return _pin_required_error()
 
     with transaction.atomic():
         StudentAssignment.objects.all().delete()
@@ -718,6 +760,9 @@ def api_beep_toggle(request: HttpRequest) -> JsonResponse:
 def api_test_populate_asimov(request: HttpRequest) -> JsonResponse:
     if not _is_facilitator(request):
         return _forbidden()
+    payload = _json_body(request)
+    if not _confirm_control_pin(payload):
+        return _pin_required_error()
 
     groups = 7
     per_group = 4

@@ -172,6 +172,27 @@ class ApiBehaviorTests(TestCase):
         self.assertEqual(pause_response.status_code, 200)
         self.assertEqual(pause_response.json()['timer_status'], 'paused')
 
+    def test_state_urls_use_https_for_public_host(self):
+        response = self.client.get('/api/state', HTTP_HOST='aiintheuk.uniwebdev.co.uk')
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(payload['join_url'].startswith('https://aiintheuk.uniwebdev.co.uk/join'))
+        self.assertTrue(payload['vote_url'].startswith('https://aiintheuk.uniwebdev.co.uk/vote'))
+
+    def test_state_urls_use_http_for_localhost(self):
+        response = self.client.get('/api/state', HTTP_HOST='localhost:8007')
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(payload['join_url'].startswith('http://localhost:8007/join'))
+        self.assertTrue(payload['vote_url'].startswith('http://localhost:8007/vote'))
+
+    def test_display_page_uses_https_links_for_public_host(self):
+        response = self.client.get('/', HTTP_HOST='aiintheuk.uniwebdev.co.uk')
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode('utf-8')
+        self.assertIn('https://aiintheuk.uniwebdev.co.uk/join', html)
+        self.assertIn('https://aiintheuk.uniwebdev.co.uk/vote', html)
+
     def test_back_moves_to_previous_section_and_then_allocation(self):
         self.unlock()
 
@@ -231,7 +252,11 @@ class ApiBehaviorTests(TestCase):
     def test_populate_asimov_creates_seven_groups_of_four(self):
         self.unlock()
 
-        response = self.client.post('/api/test/populate-asimov', data='{}', content_type='application/json')
+        response = self.client.post(
+            '/api/test/populate-asimov',
+            data='{"pin":"1234"}',
+            content_type='application/json',
+        )
         self.assertEqual(response.status_code, 200)
 
         assignments = list(StudentAssignment.objects.order_by('group_number', 'name'))
@@ -243,6 +268,28 @@ class ApiBehaviorTests(TestCase):
 
         self.assertEqual(sorted(counts.keys()), [1, 2, 3, 4, 5, 6, 7])
         self.assertEqual(set(counts.values()), {4})
+
+    def test_reset_and_populate_require_pin_confirmation(self):
+        self.unlock()
+
+        reset_no_pin = self.client.post('/api/run/reset', data='{}', content_type='application/json')
+        self.assertEqual(reset_no_pin.status_code, 403)
+
+        reset_bad_pin = self.client.post('/api/run/reset', data='{"pin":"0000"}', content_type='application/json')
+        self.assertEqual(reset_bad_pin.status_code, 403)
+
+        reset_ok = self.client.post('/api/run/reset', data='{"pin":"1234"}', content_type='application/json')
+        self.assertEqual(reset_ok.status_code, 200)
+
+        populate_no_pin = self.client.post('/api/test/populate-asimov', data='{}', content_type='application/json')
+        self.assertEqual(populate_no_pin.status_code, 403)
+
+        populate_ok = self.client.post(
+            '/api/test/populate-asimov',
+            data='{"pin":"1234"}',
+            content_type='application/json',
+        )
+        self.assertEqual(populate_ok.status_code, 200)
 
 
 class IntegrationFlowTests(TestCase):
@@ -263,7 +310,10 @@ class IntegrationFlowTests(TestCase):
     def test_full_flow_from_join_to_complete(self):
         self.unlock()
 
-        self.assertEqual(self.client.post('/api/run/reset', data='{}', content_type='application/json').status_code, 200)
+        self.assertEqual(
+            self.client.post('/api/run/reset', data='{"pin":"1234"}', content_type='application/json').status_code,
+            200,
+        )
         self.assertEqual(self.client.post('/api/join/open', data='{}', content_type='application/json').status_code, 200)
 
         self.assertEqual(
@@ -357,7 +407,7 @@ class VoteAndAwardFlowTests(TestCase):
         self.assertEqual(award_state['vote_results']['top_votes'], 2)
         self.assertFalse(award_state['vote_results']['tie'])
 
-        self.client.post('/api/run/reset', data='{}', content_type='application/json')
+        self.client.post('/api/run/reset', data='{"pin":"1234"}', content_type='application/json')
         self.assertEqual(WorkshopVote.objects.count(), 0)
 
     def test_vote_requires_rating_and_feedback(self):

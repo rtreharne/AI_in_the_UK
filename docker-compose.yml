@@ -2,6 +2,7 @@
   web:
     build:
       context: .
+    restart: unless-stopped
     ports:
       - "8007:8000"
     environment:

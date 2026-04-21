@@ -448,6 +448,22 @@
       box-shadow: 3px 3px 0 #111111;
       margin-bottom: 10px;
     }
+    .facilitator-credit {
+      margin: 0 0 14px;
+      display: inline-block;
+      padding: 7px 10px;
+      background: #ffffff;
+      color: #111111;
+      border: 3px solid #111111;
+      box-shadow: 4px 4px 0 #0e9fbb;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .facilitator-credit a {
+      color: #111111;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 2px;
+    }
     .muted {
       color: #1a1a1a;
       font-size: 0.95rem;
@@ -693,6 +709,10 @@
     <div>
       <section class="panel">
         <h1>AI in the UK Workshop</h1>
+        <p class="facilitator-credit">
+          Facilitator: <strong>Dr. Robert Treharne</strong><br>
+          <a href="mailto:R.Treharne@liverpool.ac.uk">R.Treharne@liverpool.ac.uk</a>
+        </p>
 
         <div id="timedPanel" class="hidden">
           <h2 id="sectionTitle">Section title</h2>
@@ -1837,6 +1857,19 @@
       }
     }
 
+    function promptForActionPin(actionLabel) {
+      const rawPin = window.prompt(`${actionLabel}\nEnter facilitator PIN to continue:`, '');
+      if (rawPin === null) {
+        return null;
+      }
+      const pin = String(rawPin).trim();
+      if (!pin) {
+        setStatus('PIN required for this action.', true);
+        return null;
+      }
+      return pin;
+    }
+
     document.getElementById('unlockBtn').addEventListener('click', () => {
       runAction(() => postJson('/api/pin/unlock', { pin: document.getElementById('pinInput').value }));
     });
@@ -1878,7 +1911,11 @@
       if (!confirmed) {
         return;
       }
-      runAction(() => postJson('/api/run/reset'));
+      const pin = promptForActionPin('Confirm reset run');
+      if (!pin) {
+        return;
+      }
+      runAction(() => postJson('/api/run/reset', { pin }));
     });
 
     document.getElementById('populateAsimovBtn').addEventListener('click', () => {
@@ -1886,7 +1923,11 @@
       if (!confirmed) {
         return;
       }
-      runAction(() => postJson('/api/test/populate-asimov'));
+      const pin = promptForActionPin('Confirm Asimov roster populate');
+      if (!pin) {
+        return;
+      }
+      runAction(() => postJson('/api/test/populate-asimov', { pin }));
     });
 
     document.getElementById('beepBtn').addEventListener('click', () => {
